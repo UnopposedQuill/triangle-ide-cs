@@ -1,0 +1,8 @@
+
+### C# ###
+# Compiled obj file
+.obj
+
+# Compiled Files
+**/obj/
+**/bin/
