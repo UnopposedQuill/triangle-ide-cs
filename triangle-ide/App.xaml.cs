@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace triangle_ide_cs
+namespace triangle_ide
 {
     /// <summary>
-    /// Lógica de interacción para App.xaml
+    /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {

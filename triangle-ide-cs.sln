@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "triangle-ide-cs", "triangle-ide-cs.csproj", "{4F926327-765B-4EEB-A29B-1F9BC2C4249A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "triangle-compiler", "triangle-compiler\triangle-compiler.csproj", "{926C6DAF-94CA-4C2C-831A-4383D36C7C12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "triangle-ide", "triangle-ide\triangle-ide.csproj", "{D5DBB278-07C8-4087-B9BD-244AD9CFBE40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +13,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4F926327-765B-4EEB-A29B-1F9BC2C4249A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F926327-765B-4EEB-A29B-1F9BC2C4249A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F926327-765B-4EEB-A29B-1F9BC2C4249A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F926327-765B-4EEB-A29B-1F9BC2C4249A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{926C6DAF-94CA-4C2C-831A-4383D36C7C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{926C6DAF-94CA-4C2C-831A-4383D36C7C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{926C6DAF-94CA-4C2C-831A-4383D36C7C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{926C6DAF-94CA-4C2C-831A-4383D36C7C12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5DBB278-07C8-4087-B9BD-244AD9CFBE40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5DBB278-07C8-4087-B9BD-244AD9CFBE40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5DBB278-07C8-4087-B9BD-244AD9CFBE40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5DBB278-07C8-4087-B9BD-244AD9CFBE40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E231C5C6-3264-42D4-8F4C-4C28E080020C}
+		SolutionGuid = {E0004D50-625B-49CC-857C-6A9C90766987}
 	EndGlobalSection
 EndGlobal
