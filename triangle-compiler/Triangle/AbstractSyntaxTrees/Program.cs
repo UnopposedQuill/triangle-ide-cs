@@ -3,16 +3,16 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class Program : AST
     {
-        private Command C;
+        private Command c;
 
         public Program(Command cAST, SourcePosition position) : base(position)
         {
-            C = cAST;
+            c = cAST;
         }
 
         public override object Visit(IVisitor v, object o)
         {
-            throw new System.NotImplementedException();
+            return v.VisitProgram(this, o);
         }
     }
 }

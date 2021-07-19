@@ -19,7 +19,7 @@ namespace TriangleCompiler.Triangle
                 source = new System.IO.StreamReader(filename);
                 currentLine = 1;
             }
-            catch (System.IO.FileNotFoundException)
+            catch (System.IO.IOException)
             {
                 source = null;
                 currentLine = 0;

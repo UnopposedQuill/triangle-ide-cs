@@ -1,5 +1,7 @@
 ﻿using System;
+
 using TriangleCompiler.Triangle.AbstractSyntaxTrees;
+using TriangleCompiler.Triangle.SyntacticAnalyzer;
 
 namespace TriangleCompiler.Triangle
 {
@@ -77,8 +79,8 @@ namespace TriangleCompiler.Triangle
             drawer = new Drawer();
 
             // scanner.enableDebugging();
-            programAST = parser.parseProgram();             // 1st pass
-            if (errorReporter.numErrors == 0)
+            programAST = parser.ParseProgram();             // 1st pass
+            if (errorReporter.getErrorCount() == 0)
             {
                 //if (showingAST) {
                 //    drawer.draw(programAST);
@@ -90,14 +92,14 @@ namespace TriangleCompiler.Triangle
                 {
                     drawer.draw(programAST);
                 }
-                if (errorReporter.numErrors == 0)
+                if (errorReporter.getErrorCount() == 0)
                 {
                     Console.WriteLine("Code Generation ...");
                     encoder.encodeRun(programAST, showingTable);    // 3rd pass
                 }
             }
 
-            bool successful = errorReporter.numErrors == 0;
+            bool successful = errorReporter.getErrorCount() == 0;
             if (successful)
             {
                 encoder.saveObjectProgram(objectName);

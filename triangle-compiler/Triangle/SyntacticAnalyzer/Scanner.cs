@@ -1,5 +1,5 @@
 ﻿
-namespace TriangleCompiler.Triangle
+namespace TriangleCompiler.Triangle.SyntacticAnalyzer
 {
     public class Scanner
     {
