@@ -18,6 +18,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
             return v.VisitArrayTypeDenoter(this, o);
         }
 
+        public override int GetHashCode()
+        {
+            return System.HashCode.Combine(integerLiteral, t);
+        }
+
         public override bool Equals(object obj)
         {
             //This is a bypass for error handling
@@ -27,8 +32,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
             }
             if (obj != null && obj is ArrayTypeDenoter)
             {
-                return integerLiteral.spelling.compareTo(((ArrayTypeDenoter)obj).integerLiteral.spelling) == 0 &&
-                                    t.equals(((ArrayTypeDenoter)obj).t);
+                return integerLiteral.GetSpelling().CompareTo(((ArrayTypeDenoter)obj).integerLiteral.GetSpelling()) == 0 &&
+                                    t.Equals(((ArrayTypeDenoter)obj).t);
             }
             else
             {

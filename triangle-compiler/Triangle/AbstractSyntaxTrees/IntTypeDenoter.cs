@@ -1,16 +1,11 @@
 ﻿
 namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
-    public class CharTypeDenoter : TypeDenoter
+    public class IntTypeDenoter : TypeDenoter
     {
-        public CharTypeDenoter(SourcePosition position) : base(position)
+        public IntTypeDenoter(SourcePosition position) : base(position)
         {
 
-        }
-
-        public override object Visit(IVisitor v, object o)
-        {
-            return v.VisitCharTypeDenoter(this, o);
         }
 
         public override bool Equals(object obj)
@@ -20,12 +15,17 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
             {
                 return true;
             }
-            return obj != null && obj is CharTypeDenoter;
+            return obj != null && obj is IntTypeDenoter;
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public override object Visit(IVisitor v, object o)
+        {
+            return v.VisitIntTypeDenoter(this, o);
         }
     }
 }

@@ -22,5 +22,10 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
             }
             return ((obj != null) && (obj is BoolTypeDenoter));
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

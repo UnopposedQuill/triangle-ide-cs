@@ -8,9 +8,9 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         }
 
-        public object Visit(IVisitor v, object o)
+        public override int GetHashCode()
         {
-            return v.VisitAnyTypeDenoter(this, o);
+            return base.GetHashCode();
         }
 
         /**
@@ -20,6 +20,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public override bool Equals(object obj)
         {
             return false;
+        }
+
+        public override object Visit(IVisitor v, object o)
+        {
+            return v.VisitAnyTypeDenoter(this, o);
         }
     }
 }

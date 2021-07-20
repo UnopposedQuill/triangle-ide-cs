@@ -41,7 +41,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public abstract object VisitTypeDeclaration(TypeDeclaration ast, object o);
         public abstract object VisitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, object o);
         public abstract object VisitVarDeclaration(VarDeclaration ast, object o);
-        public abstract object VisitVarDeclarationInitialized(VarDeclarationInitialized ast, object o); // ADDED
+        public abstract object VisitVarDeclarationInitialized(VarDeclarationInitialized ast, object o);
         public abstract object VisitRecursiveDeclaration(RecursiveDeclaration ast, object o);
         public abstract object VisitLocalDeclaration(LocalDeclaration ast, object o);
 
