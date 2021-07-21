@@ -8,6 +8,9 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         }
 
+        /**
+         * Will be the same as another one of the same type
+         */
         public override bool Equals(object obj)
         {
             return obj is EmptyFormalParameterSequence;
