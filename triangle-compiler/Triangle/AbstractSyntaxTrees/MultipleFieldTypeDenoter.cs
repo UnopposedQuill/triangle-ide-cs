@@ -1,7 +1,4 @@
 ﻿
-using System;
-using System.Collections.Generic;
-
 namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class MultipleFieldTypeDenoter : FieldTypeDenoter
@@ -28,7 +25,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(identifier, typeDenoter, fieldTypeDenoter);
+            return System.HashCode.Combine(base.GetHashCode(), identifier, typeDenoter, fieldTypeDenoter);
         }
 
         public override object Visit(IVisitor v, object o)

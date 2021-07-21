@@ -1,7 +1,4 @@
 ﻿
-using System;
-using System.Collections.Generic;
-
 namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class RecordTypeDenoter : TypeDenoter
@@ -31,7 +28,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(base.GetHashCode(), fieldTypeDenoter);
+            return System.HashCode.Combine(base.GetHashCode(), fieldTypeDenoter);
         }
     }
 }

@@ -314,7 +314,7 @@ namespace TriangleCompiler.Triangle.SyntacticAnalyzer
 
         // parseCharacterLiteral parses a character-literal, and constructs a leaf
         // AST to represent it.
-        private CharacterLiteral parseCharacterLiteral()
+        private CharacterLiteral ParseCharacterLiteral()
         {
             CharacterLiteral CL;
 
@@ -334,7 +334,7 @@ namespace TriangleCompiler.Triangle.SyntacticAnalyzer
 
         // parseIdentifier parses an identifier, and constructs a leaf AST to
         // represent it.
-        private Identifier parseIdentifier()
+        private Identifier ParseIdentifier()
         {
             Identifier I;
 
@@ -355,14 +355,14 @@ namespace TriangleCompiler.Triangle.SyntacticAnalyzer
 
         // parseOperator parses an operator, and constructs a leaf AST to
         // represent it.
-        private Operator parseOperator()
+        private Operator ParseOperator()
         {
             Operator O;
 
             if (currentToken.kind == Token.OPERATOR)
             {
                 previousTokenPosition = currentToken.position;
-                String spelling = currentToken.spelling;
+                string spelling = currentToken.spelling;
                 O = new Operator(spelling, previousTokenPosition);
                 currentToken = scanner.Scan();
             } else {

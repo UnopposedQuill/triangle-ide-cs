@@ -1,43 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class Identifier : Terminal
     {
-        private TypeDenoter type;
-        private AST decl; // Either a Declaration or a FieldTypeDenoter
+        private TypeDenoter Type { get; set; }
+        private AST Declaration { get; set; } // Either a Declaration or a FieldTypeDenoter
 
-        public Identifier(string spelling, TypeDenoter type, AST decl,
-                SourcePosition position) : base(spelling, position)
+        public Identifier(string spelling, SourcePosition position) : base(spelling, position)
         {
-            this.type = type;
-            this.decl = decl;
+            Type = null;
+            Declaration = null;
         }
 
         public override bool Equals(object obj)
         {
+            
             return obj is Identifier identifier && GetSpelling().Equals(identifier.GetSpelling());
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(type, decl);
+            return System.HashCode.Combine(Type, Declaration);
         }
 
         public override object Visit(IVisitor v, object o)
         {
             return v.VisitIdentifier(this, o);
-        }
-
-        public TypeDenoter GetTypeDenoter()
-        {
-            return type;
-        }
-
-        public AST GetDecl()
-        {
-            return decl;
         }
     }
 }

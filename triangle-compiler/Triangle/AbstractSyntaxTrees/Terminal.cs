@@ -6,7 +6,7 @@
 
         public Terminal(string spelling, SourcePosition position) : base(position)
         {
-
+            this.spelling = spelling;
         }
 
         public string GetSpelling()

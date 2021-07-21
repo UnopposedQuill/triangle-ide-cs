@@ -9,6 +9,9 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         }
 
         public override abstract bool Equals(object obj);
-        public override abstract int GetHashCode();
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

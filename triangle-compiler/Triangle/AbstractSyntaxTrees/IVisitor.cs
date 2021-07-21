@@ -13,10 +13,10 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public abstract object VisitIfCommand(IfCommand ast, object o);
         public abstract object VisitLetCommand(LetCommand ast, object o);
         public abstract object VisitSequentialCommand(SequentialCommand ast, object o);
-        public abstract object VisitWhileLoopCommand(LoopCommand ast, object o);
-        public abstract object VisitDoWhileLoopCommand(LoopCommand ast, object o);
-        public abstract object VisitUntilLoopCommand(LoopCommand ast, object o);
-        public abstract object VisitDoUntilLoopCommand(LoopCommand ast, object o);
+        public abstract object VisitWhileLoopCommand(WhileLoopCommand ast, object o);
+        public abstract object VisitDoWhileLoopCommand(DoWhileLoopCommand ast, object o);
+        public abstract object VisitUntilLoopCommand(UntilLoopCommand ast, object o);
+        public abstract object VisitDoUntilLoopCommand(DoUntilLoopCommand ast, object o);
         public abstract object VisitForLoopCommand(ForLoopCommand ast, object o);
 
         // Expressions
