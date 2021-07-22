@@ -45,12 +45,12 @@ namespace TriangleCompiler.Triangle.SyntacticAnalyzer
             currentSpelling = "";
             sourcePosition = new SourcePosition
             {
-                start = sourceFile.GetCurrentLine()
+                Start = sourceFile.GetCurrentLine()
             };
 
             kind = ScanToken();
 
-            sourcePosition.finish = sourceFile.GetCurrentLine();
+            sourcePosition.Finish = sourceFile.GetCurrentLine();
             bool wasIdentifier = kind == Token.IDENTIFIER;
             token = new Token(kind, currentSpelling.ToString(), sourcePosition);
             if (writingHTML && wasIdentifier && token.kind != Token.IDENTIFIER)

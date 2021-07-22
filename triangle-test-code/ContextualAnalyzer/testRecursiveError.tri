@@ -1,0 +1,27 @@
+let
+
+	recursive
+
+		proc P()~
+
+			E()
+
+		end
+
+	and
+
+		proc E()~
+
+			skip
+
+		end
+	and
+		func E() : Integer ~ (2+5) !error: identifier E is duplicated
+
+	end
+
+in
+
+	P()
+
+end

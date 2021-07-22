@@ -1,0 +1,18 @@
+let
+    var j init 'c';
+
+    var i : Integer;
+
+    var x init 5;
+
+    var A init 'Z';
+
+    var h : Integer;
+
+    var p init 554
+
+in
+    skip
+end
+
+! Pruebas para variables inicializadas

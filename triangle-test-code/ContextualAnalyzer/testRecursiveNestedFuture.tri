@@ -1,0 +1,19 @@
+let
+	recursive
+		proc P()~
+			let
+				proc E()~
+					Q()
+				end
+			in
+				E()
+			end
+		end
+	and
+		proc Q()~
+			skip
+		end
+	end
+in
+	P()
+end

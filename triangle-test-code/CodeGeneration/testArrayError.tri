@@ -1,0 +1,5 @@
+let
+	const x ~ [0,1]
+in
+	putint(x[-1])
+end

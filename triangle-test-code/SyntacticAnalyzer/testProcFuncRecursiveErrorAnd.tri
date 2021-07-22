@@ -1,0 +1,13 @@
+let
+    recursive
+        func doble(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+	and
+	func doble2(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+	and
+	
+in
+    skip
+end
+! Pruebas para FuncProcs y recursive, error ya que no hay Proc o Func despues del and

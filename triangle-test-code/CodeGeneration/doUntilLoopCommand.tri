@@ -1,0 +1,11 @@
+let
+	var x:Integer
+in
+	x:=0;
+	loop do
+		putint(x);puteol();
+		x:=x+1
+	until
+		x>5
+	repeat
+end

@@ -1,0 +1,9 @@
+let
+	proc prueba(i:Integer) ~
+		putint(i)
+	end
+in
+	loop for i ~ 0 to 5 do
+		prueba(i)
+	repeat
+end

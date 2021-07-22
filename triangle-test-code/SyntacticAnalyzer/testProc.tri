@@ -1,0 +1,7 @@
+let
+        proc triplicar(var i : Integer) ~
+            putint(i)
+        end
+in
+    skip
+end

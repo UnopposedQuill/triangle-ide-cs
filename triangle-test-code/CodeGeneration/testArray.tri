@@ -1,0 +1,8 @@
+let
+	var x: array 2 of Integer;
+	const y ~ [0,1]
+in
+	x:=y;
+	putint(x[0]);puteol();
+	putint(x[1])
+end

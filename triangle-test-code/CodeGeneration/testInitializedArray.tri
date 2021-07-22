@@ -1,0 +1,10 @@
+let
+	var x init [0,4];
+	const y ~ [0,2]
+in
+	putint(x[0]);puteol();
+	putint(x[1]);puteol();
+	x:=y;
+	putint(x[0]);puteol();
+	putint(x[1])
+end

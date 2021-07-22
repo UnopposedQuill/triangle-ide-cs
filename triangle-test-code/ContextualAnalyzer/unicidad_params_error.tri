@@ -1,0 +1,9 @@
+let
+   proc A(x : Integer, y : Integer)~
+   skip
+   end
+
+in
+  A(1, 2)
+
+end

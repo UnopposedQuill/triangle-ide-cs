@@ -1,0 +1,9 @@
+let
+	local
+		const x ~ 0
+	in
+		const x ~ x+1
+	end
+in
+	putint(x)
+end

@@ -1,0 +1,16 @@
+let
+	recursive
+		proc P()~
+			loop for i ~ 4 to 10 do
+				E()
+			repeat
+		end
+		
+	and
+		proc E()~
+			skip
+		end
+	end
+in
+	P()
+end

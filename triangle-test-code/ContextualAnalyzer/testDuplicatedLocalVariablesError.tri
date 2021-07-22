@@ -1,0 +1,11 @@
+let
+	var x: Integer;
+	local
+		var y: Integer
+	in
+		var x: Integer;
+		var z: Integer
+	end
+in
+	x:=5
+end

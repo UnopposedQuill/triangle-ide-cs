@@ -1,0 +1,2 @@
+loop a ~ 0 to 10 do x:=4 repeat
+!No es aceptado ya que falta el token for

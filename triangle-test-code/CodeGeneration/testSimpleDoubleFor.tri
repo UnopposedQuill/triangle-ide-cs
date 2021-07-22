@@ -1,0 +1,5 @@
+loop for i ~ 0 to 2 do
+	loop for j ~ 0 to 2 do
+		putint(i);put('-');putint(j);puteol()
+	repeat
+repeat

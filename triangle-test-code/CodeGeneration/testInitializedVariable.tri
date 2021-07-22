@@ -1,0 +1,7 @@
+let
+	var x init 1
+in
+	putint(x);
+	x:=5;
+	putint(x)
+end

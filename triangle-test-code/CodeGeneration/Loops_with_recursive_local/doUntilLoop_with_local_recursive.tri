@@ -1,0 +1,30 @@
+let
+    type int ~ Integer;
+    local
+        var fin init 10;
+        var inicio init 0;
+        var i init inicio
+    in
+        recursive
+            proc P() ~
+                loop do
+                    putint(i);
+                    put(':');
+                    put(' ');
+                    Q(1);
+                    i := i + 1
+                until i < fin repeat
+            end
+
+        and
+
+            proc Q(i : int) ~
+                putint(i);
+                puteol()
+            end
+
+        end
+    end
+in
+    P()
+end

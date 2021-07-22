@@ -1,0 +1,15 @@
+let
+    recursive
+        func doble(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+	and
+	func doble2(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+	and
+	func doble3(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+    end
+in
+    skip
+end
+! Pruebas para FuncProcs y recursive

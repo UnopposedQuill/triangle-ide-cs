@@ -1,0 +1,9 @@
+let
+	var x: Char
+in
+	get(var x);
+	if x = 'a'
+	then putint(1)
+	else putint(2)
+	end
+end

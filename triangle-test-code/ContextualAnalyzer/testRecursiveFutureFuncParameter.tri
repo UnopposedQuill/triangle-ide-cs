@@ -1,0 +1,14 @@
+let
+	recursive
+		func P(func A(numero: Integer): Integer): Integer~
+			A(1)
+	and
+		func addOne(i: Integer): Integer~
+			i+1
+	and
+		func subOne(i: Integer): Integer ~
+			i - 1
+	end
+in
+	putint(P(func addOne))
+end

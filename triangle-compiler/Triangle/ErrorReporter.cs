@@ -25,7 +25,7 @@ namespace TriangleCompiler.Triangle
                     System.Console.WriteLine(message[i]);
                 }
             }
-            System.Console.WriteLine(" " + position.start + ".." + position.finish);
+            System.Console.WriteLine(" " + position.Start + ".." + position.Finish);
             errorCount++;
         }
 

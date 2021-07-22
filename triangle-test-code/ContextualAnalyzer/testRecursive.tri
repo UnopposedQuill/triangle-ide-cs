@@ -1,0 +1,14 @@
+let
+	recursive
+
+		proc P() ~ F() end
+		and
+		proc F() ~ putint(10) end
+		and
+		proc T() ~ P() end
+		
+	end
+	
+in
+	T()
+end

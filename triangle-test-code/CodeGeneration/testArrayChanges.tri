@@ -1,0 +1,6 @@
+let
+	var x init [0,1]
+in
+	x[0] := 1;
+	putint(x[0])
+end

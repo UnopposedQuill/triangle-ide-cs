@@ -1,0 +1,12 @@
+let
+	var x: Integer
+in
+	x:=0;
+	loop do
+		putint(x);
+		puteol();
+		x:=x+1
+	while
+		x<5
+	repeat
+end

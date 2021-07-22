@@ -1,0 +1,9 @@
+let
+    recursive
+        func doble(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+	
+in
+    skip
+end
+! Pruebas para FuncProcs y recursive, error ya que solo hay un proc o func

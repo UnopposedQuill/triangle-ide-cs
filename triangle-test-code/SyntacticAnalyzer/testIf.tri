@@ -1,0 +1,4 @@
+if 1>0
+then x:=4
+else x:=5
+end

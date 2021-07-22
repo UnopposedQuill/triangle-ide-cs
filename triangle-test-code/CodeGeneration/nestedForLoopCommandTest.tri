@@ -1,0 +1,22 @@
+let
+	type int ~ Integer;
+	proc P(i : int, f : int,i2 : int, f2 : int) ~
+		loop for t ~ i to f do
+			putint(t);
+			loop for t2 ~ i2 to f2 do
+				putint(t);
+				put(':');
+				putint(t2);
+				puteol()
+			repeat
+		repeat
+	end
+in
+	loop for i ~ 5 to 10 do
+		putint(i);
+		puteol();
+		put(')');
+		puteol();
+		P(0,10,0,5)
+	repeat
+end

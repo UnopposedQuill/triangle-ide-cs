@@ -1,0 +1,7 @@
+loop do
+    x:=x-1
+    !while
+    x > 0
+!repeat
+
+!No estan ni el while ni el repeat

@@ -1,0 +1,13 @@
+let
+    local
+        func doble(var i : Integer) : Integer ~
+            triplicar(i)/3*2
+    in
+        proc triplicar(var i : Integer) ~
+            i := i + doble(i)
+        end
+    
+in
+    skip
+end
+!Error ya que no se cierra el bloque local con "end"

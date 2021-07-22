@@ -1,0 +1,5 @@
+let
+	const x ~ 'a'
+in
+	put(x)
+end

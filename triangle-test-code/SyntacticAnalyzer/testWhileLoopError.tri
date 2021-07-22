@@ -1,0 +1,7 @@
+loop while
+    x > 0
+    !do
+    x:=x-1
+repeat
+
+!Hace falta el do

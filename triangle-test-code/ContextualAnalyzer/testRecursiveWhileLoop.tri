@@ -1,0 +1,15 @@
+let
+	recursive
+		proc P()~
+			loop while true do
+				E()
+			repeat
+		end
+	and
+		proc E()~
+			skip
+		end
+	end
+in
+	P()
+end

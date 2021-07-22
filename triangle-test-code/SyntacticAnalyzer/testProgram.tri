@@ -1,0 +1,31 @@
+let
+var x: Integer
+in
+	!asignacion basica
+	x:=4;
+	!while loop
+	loop while
+	x > 0
+	do
+	x:=x-1
+	repeat;
+	!until loop
+	loop until
+	x > 4
+	do
+	x:=x+1
+	repeat;
+	!do while loop
+	loop do
+	x:=x-1
+	while
+	x > 0
+	repeat;
+	!do until loop
+	loop do
+	x:=x+1
+	until
+	x > 4
+	repeat;
+	loop for a ~ 0 to 10 do x:=4 repeat
+end

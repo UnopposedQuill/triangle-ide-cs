@@ -1,0 +1,11 @@
+let
+	local
+		const x ~ 1
+	in
+		const y ~ x+1;
+		var z: Integer
+	end
+in
+	z:=y;
+	putint(z)
+end

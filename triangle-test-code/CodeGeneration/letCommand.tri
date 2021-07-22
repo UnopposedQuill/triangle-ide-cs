@@ -1,0 +1,6 @@
+let
+	var x:Integer
+in
+	x:=1;
+	putint(x)
+end

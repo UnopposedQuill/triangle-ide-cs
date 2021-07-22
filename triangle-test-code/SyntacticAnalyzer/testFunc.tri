@@ -1,0 +1,6 @@
+let
+        func doble(var i : Integer) : Integer ~
+            x < 3
+in
+    skip
+end

@@ -1,0 +1,7 @@
+loop do
+    x:=x+1
+    !until 
+    x > 5
+repeat
+
+!Falta el until

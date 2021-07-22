@@ -1,0 +1,14 @@
+let
+	local
+		const x ~ 10
+	in
+		local
+			const y ~ x+1
+		in
+			const z ~ y+2;
+			var a: Integer
+		end
+	end
+in
+	a:=5	
+end

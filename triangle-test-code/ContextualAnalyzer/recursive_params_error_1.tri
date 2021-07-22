@@ -1,0 +1,24 @@
+let
+
+   recursive
+    proc Q()~
+      let
+        var t init true;
+        var a init 1
+      in
+        P(t,a)
+      end !let end
+
+    end !Q() end
+
+   and
+
+    proc P(isTrue : Boolean)~
+      skip
+    end !P() end
+
+   end !recursive end
+
+in
+    Q()
+end

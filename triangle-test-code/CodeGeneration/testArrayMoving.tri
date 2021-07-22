@@ -1,0 +1,6 @@
+let
+	var x init [0,1,2];
+	var y init x
+in
+	putint(y[2])
+end

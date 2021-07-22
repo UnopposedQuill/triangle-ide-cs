@@ -1,0 +1,7 @@
+let
+	const x ~ 1;
+	const y ~ x+1;
+	var z:Integer
+in
+	z := x+y
+end

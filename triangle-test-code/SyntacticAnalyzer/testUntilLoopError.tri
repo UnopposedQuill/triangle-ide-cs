@@ -1,0 +1,6 @@
+loop until
+    x > 5
+    do
+    x:=x+1
+
+!Falta el repeat

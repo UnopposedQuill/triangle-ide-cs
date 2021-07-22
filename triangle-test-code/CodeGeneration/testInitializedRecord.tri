@@ -1,0 +1,12 @@
+let
+	type Date ~ record
+			m: Integer, d: Integer
+		    end;
+	var x init {m ~ 12, d ~ 25}
+in
+	putint(x.m);puteol();
+	putint(x.d);puteol();
+	x := {m ~ 11, d ~ 20};
+	putint(x.m);puteol();
+	putint(x.d);
+end

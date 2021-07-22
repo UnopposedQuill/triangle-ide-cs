@@ -1,0 +1,11 @@
+let
+	proc P() ~
+		skip
+	end;
+
+	proc Q() ~ 
+		P()
+	end
+in
+	Q()
+end

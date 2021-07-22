@@ -1,0 +1,9 @@
+let
+	var x: Integer;
+	proc print() ~
+		x:=1;
+		putint(x);
+	end
+in
+	print()
+end

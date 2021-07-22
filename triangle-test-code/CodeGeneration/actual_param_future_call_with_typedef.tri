@@ -1,0 +1,15 @@
+let
+    type int ~ Integer;
+
+    recursive
+        proc P()~
+            putint(Q())
+        end
+
+    and
+
+        func Q() : int ~ 1
+    end
+in
+    P()
+end

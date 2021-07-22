@@ -1,0 +1,15 @@
+let
+	var x: Integer;
+	recursive
+		proc print() ~
+			x:=1;
+			putint(x);
+		end
+	and
+		proc y() ~
+			print()
+		end
+	end
+in
+	y()
+end

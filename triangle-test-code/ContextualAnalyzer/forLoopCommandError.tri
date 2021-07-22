@@ -1,0 +1,11 @@
+let
+	var x : Integer
+in
+	x := 1;
+	loop for y ~ x to 5
+	do
+		y:=x;
+		putint(x);
+		puteol()
+	repeat
+end

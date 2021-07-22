@@ -1,0 +1,14 @@
+let
+	var inicio init 0;
+	var final init 10;
+	proc Q(i: Integer) ~ 
+		putint(i);
+		puteol()
+	end
+in
+	loop for i ~ inicio to final do
+		putint(i);
+		put('-');
+		Q(i)
+	repeat
+end

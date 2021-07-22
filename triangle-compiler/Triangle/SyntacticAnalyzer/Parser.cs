@@ -22,7 +22,6 @@ namespace TriangleCompiler.Triangle.SyntacticAnalyzer
             previousTokenPosition = new SourcePosition();
         }
 
-
         #region Internal Methods
 
         /**
@@ -863,7 +862,281 @@ namespace TriangleCompiler.Triangle.SyntacticAnalyzer
 
         #endregion
 
+        #region Parameters
 
+        private FormalParameterSequence ParseFormalParameterSequence()
+        {
+            FormalParameterSequence formalsAST;
+
+            SourcePosition formalsPos = new();
+
+            Start(formalsPos);
+            if (currentToken.kind == Token.RPAREN) {
+                Finish(formalsPos);
+                formalsAST = new EmptyFormalParameterSequence(formalsPos);
+            }
+            else
+            {
+                formalsAST = ParseProperFormalParameterSequence();
+            }
+            return formalsAST;
+        }
+
+        private FormalParameterSequence ParseProperFormalParameterSequence()
+        {
+            FormalParameterSequence formalsAST;
+
+            SourcePosition formalsPos = new();
+            Start(formalsPos);
+            FormalParameter fpAST = ParseFormalParameter();
+            if (currentToken.kind == Token.COMMA)
+            {
+                AcceptIt();
+                FormalParameterSequence fpsAST = ParseProperFormalParameterSequence();
+                Finish(formalsPos);
+                formalsAST = new MultipleFormalParameterSequence(fpAST, fpsAST, formalsPos);
+            }
+            else
+            {
+                Finish(formalsPos);
+                formalsAST = new SingleFormalParameterSequence(fpAST, formalsPos);
+            }
+            return formalsAST;
+        }
+
+        private FormalParameter ParseFormalParameter()
+        {
+            FormalParameter formalAST = null; // in case there's a syntactic error;
+
+            SourcePosition formalPos = new();
+            Start(formalPos);
+
+            switch (currentToken.kind)
+            {
+                case Token.IDENTIFIER:
+                    {
+                        Identifier iAST = ParseIdentifier();
+                        Accept(Token.COLON);
+                        TypeDenoter tAST = ParseTypeDenoter();
+                        Finish(formalPos);
+                        formalAST = new ConstFormalParameter(iAST, tAST, formalPos);
+                        break;
+                    }
+                case Token.VAR:
+                    {
+                        AcceptIt();
+                        Identifier iAST = ParseIdentifier();
+                        Accept(Token.COLON);
+                        TypeDenoter tAST = ParseTypeDenoter();
+                        Finish(formalPos);
+                        formalAST = new VarFormalParameter(iAST, tAST, formalPos);
+                        break;
+                    }
+                case Token.PROC:
+                    {
+                        AcceptIt();
+                        Identifier iAST = ParseIdentifier();
+                        Accept(Token.LPAREN);
+                        FormalParameterSequence fpsAST = ParseFormalParameterSequence();
+                        Accept(Token.RPAREN);
+                        Finish(formalPos);
+                        formalAST = new ProcFormalParameter(iAST, fpsAST, formalPos);
+                        break;
+                    }
+                case Token.FUNC:
+                    {
+                        AcceptIt();
+                        Identifier iAST = ParseIdentifier();
+                        Accept(Token.LPAREN);
+                        FormalParameterSequence fpsAST = ParseFormalParameterSequence();
+                        Accept(Token.RPAREN);
+                        Accept(Token.COLON);
+                        TypeDenoter tAST = ParseTypeDenoter();
+                        Finish(formalPos);
+                        formalAST = new FuncFormalParameter(iAST, fpsAST, tAST, formalPos);
+                        break;
+                    }
+                default:
+                    {
+                        SyntacticError("\"%\" cannot start a formal parameter", currentToken.spelling);
+                        break;
+                    }
+
+            }
+            return formalAST;
+        }
+
+        private ActualParameterSequence ParseActualParameterSequence()
+        {
+            ActualParameterSequence actualsAST;
+            SourcePosition actualsPos = new();
+            Start(actualsPos);
+            if (currentToken.kind == Token.RPAREN)
+            {
+                Finish(actualsPos);
+                actualsAST = new EmptyActualParameterSequence(actualsPos);
+            }
+            else
+            {
+                actualsAST = ParseProperActualParameterSequence();
+            }
+            return actualsAST;
+        }
+
+        private ActualParameterSequence ParseProperActualParameterSequence()
+        {
+            ActualParameterSequence actualsAST;
+            SourcePosition actualsPos = new();
+            Start(actualsPos);
+            ActualParameter apAST = ParseActualParameter();
+            if (currentToken.kind == Token.COMMA)
+            {
+                AcceptIt();
+                ActualParameterSequence apsAST = ParseProperActualParameterSequence();
+                Finish(actualsPos);
+                actualsAST = new MultipleActualParameterSequence(apAST, apsAST, actualsPos);
+            }
+            else
+            {
+                Finish(actualsPos);
+                actualsAST = new SingleActualParameterSequence(apAST, actualsPos);
+            }
+            return actualsAST;
+        }
+
+        private ActualParameter ParseActualParameter()
+        {
+            ActualParameter actualAST = null; // in case there's a syntactic error
+            SourcePosition actualPos = new();
+            Start(actualPos);
+            switch (currentToken.kind)
+            {
+                case Token.IDENTIFIER:
+                case Token.INTLITERAL:
+                case Token.CHARLITERAL:
+                case Token.OPERATOR:
+                case Token.LET:
+                case Token.IF:
+                case Token.LPAREN:
+                case Token.LBRACKET:
+                case Token.LCURLY:
+                    {
+                        Expression eAST = ParseExpression();
+                        Finish(actualPos);
+                        actualAST = new ConstActualParameter(eAST, actualPos);
+                    }
+                    break;
+
+                case Token.VAR:
+                    {
+                        AcceptIt();
+                        Vname vAST = ParseVname();
+                        Finish(actualPos);
+                        actualAST = new VarActualParameter(vAST, actualPos);
+                    }
+                    break;
+
+                case Token.PROC:
+                    {
+                        AcceptIt();
+                        Identifier iAST = ParseIdentifier();
+                        Finish(actualPos);
+                        actualAST = new ProcActualParameter(iAST, actualPos);
+                    }
+                    break;
+
+                case Token.FUNC:
+                    {
+                        AcceptIt();
+                        Identifier iAST = ParseIdentifier();
+                        Finish(actualPos);
+                        actualAST = new FuncActualParameter(iAST, actualPos);
+                    }
+                    break;
+
+                default:
+                    {
+                        SyntacticError("\"%\" cannot start an actual parameter", currentToken.spelling);
+                        break;
+                    }
+            }
+            return actualAST;
+        }
+
+        #endregion
+
+        #region Type Denoters
+
+        private TypeDenoter ParseTypeDenoter()
+        {
+            TypeDenoter typeAST = null; // in case there's a syntactic error
+            SourcePosition typePos = new SourcePosition();
+
+            Start(typePos);
+
+            switch (currentToken.kind) 
+            {
+                case Token.IDENTIFIER: 
+                {
+                    Identifier iAST = ParseIdentifier();
+                    Finish(typePos);
+                    typeAST = new SimpleTypeDenoter(iAST, typePos);
+                        break;
+                }
+                case Token.ARRAY: 
+                {
+                    AcceptIt();
+                    IntegerLiteral ilAST = ParseIntegerLiteral();
+                    Accept(Token.OF);
+                    TypeDenoter tAST = ParseTypeDenoter();
+                    Finish(typePos);
+                    typeAST = new ArrayTypeDenoter(ilAST, tAST, typePos);
+                    break;
+                }
+                case Token.RECORD:
+                {
+                    AcceptIt();
+                    FieldTypeDenoter fAST = parseFieldTypeDenoter();
+                    Accept(Token.END);
+                    Finish(typePos);
+                    typeAST = new RecordTypeDenoter(fAST, typePos);
+                    break;
+                }
+                default:
+                {
+                    SyntacticError("\"%\" cannot start a type denoter", currentToken.spelling);
+                    break;
+                }
+            }
+            return typeAST;
+        }
+
+        private FieldTypeDenoter parseFieldTypeDenoter()
+        {
+            FieldTypeDenoter fieldAST;
+
+            SourcePosition fieldPos = new SourcePosition();
+
+            Start(fieldPos);
+            Identifier iAST = ParseIdentifier();
+            Accept(Token.COLON);
+            TypeDenoter tAST = ParseTypeDenoter();
+            if (currentToken.kind == Token.COMMA)
+            {
+                AcceptIt();
+                FieldTypeDenoter fAST = parseFieldTypeDenoter();
+                Finish(fieldPos);
+                fieldAST = new MultipleFieldTypeDenoter(iAST, tAST, fAST, fieldPos);
+            }
+            else
+            {
+                Finish(fieldPos);
+                fieldAST = new SingleFieldTypeDenoter(iAST, tAST, fieldPos);
+            }
+            return fieldAST;
+        }
+
+        #endregion
 
     }
 }

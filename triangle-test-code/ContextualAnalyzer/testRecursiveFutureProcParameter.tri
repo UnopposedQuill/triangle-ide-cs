@@ -1,0 +1,13 @@
+let
+	recursive
+		proc P(proc A(numero: Integer))~
+			A(1)
+		end
+	and
+		proc Q(i: Integer)~
+			skip
+		end
+	end
+in
+	P(proc Q)
+end

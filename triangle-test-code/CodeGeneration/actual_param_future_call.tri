@@ -1,0 +1,19 @@
+let
+    recursive
+        proc X() ~
+            put(P())
+        end
+
+    and
+
+        func  P() : Char ~ Q()
+
+    and
+
+        func Q() : Char~ 'a'
+    
+   end
+
+in
+    X()
+end

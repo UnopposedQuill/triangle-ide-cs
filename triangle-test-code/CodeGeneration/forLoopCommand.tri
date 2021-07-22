@@ -1,0 +1,6 @@
+loop for
+	x ~ 0 to 5
+	do
+	putint(x);
+	puteol()
+repeat

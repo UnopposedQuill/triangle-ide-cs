@@ -10,12 +10,12 @@ namespace TriangleCompiler.Triangle
         //Filename for the object program, default is obj.tam
         public static string objectName = "obj.tam";
 
+        private static ErrorReporter errorReporter;
         private static Scanner scanner;
         private static Parser parser;
-        private static Checker checker;
+        /*private static Checker checker;
         private static Encoder encoder;
-        private static ErrorReporter errorReporter;
-        private static Drawer drawer;
+        private static Drawer drawer;*/
 
         private static Program programAST;
 
@@ -70,17 +70,17 @@ namespace TriangleCompiler.Triangle
             }
             */
 
-            SourceFile source = new SourceFile(sourceName);
+            SourceFile source = new(sourceName);
             scanner = new Scanner(source);
             errorReporter = new ErrorReporter();
             parser = new Parser(scanner, errorReporter);
-            checker = new Checker(errorReporter);
+            /*checker = new Checker(errorReporter);
             encoder = new Encoder(errorReporter);
-            drawer = new Drawer();
+            drawer = new Drawer();*/
 
             // scanner.enableDebugging();
             programAST = parser.ParseProgram();             // 1st pass
-            if (errorReporter.getErrorCount() == 0)
+            /*if (errorReporter.getErrorCount() == 0)
             {
                 //if (showingAST) {
                 //    drawer.draw(programAST);
@@ -97,12 +97,12 @@ namespace TriangleCompiler.Triangle
                     Console.WriteLine("Code Generation ...");
                     encoder.encodeRun(programAST, showingTable);    // 3rd pass
                 }
-            }
+            }*/
 
             bool successful = errorReporter.getErrorCount() == 0;
             if (successful)
             {
-                encoder.saveObjectProgram(objectName);
+                //encoder.saveObjectProgram(objectName);
                 Console.WriteLine("Compilation was successful.");
             }
             else
@@ -120,18 +120,22 @@ namespace TriangleCompiler.Triangle
          */
         public static int Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
             bool compiledOK;
 
+            Console.WriteLine(args.Length);
+            foreach (string s in args)
+            {
+                Console.WriteLine(s);
+            }
+
             //Only the program path was added on commands
-            if (args.Length <= 1)
+            if (args.Length <= 0)
             {
                 Console.WriteLine("Usage: tc filename");
                 return 1;
             }
 
-            String sourceName = args[1];
+            String sourceName = args[0];
             compiledOK = CompileProgram(sourceName, objectName, false, false, false, false);
 
             return compiledOK ? 0 : 1;

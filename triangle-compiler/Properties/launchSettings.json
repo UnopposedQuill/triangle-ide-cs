@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "triangle-compiler": {
+      "commandName": "Project",
+      "commandLineArgs": "SyntacticAnalyzer/skip.tri",
+      "workingDirectory": "D:\\Esteban\\Github\\triangle-ide-cs\\triangle-test-code\\"
+    }
+  }
+}

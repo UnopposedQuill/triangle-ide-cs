@@ -1,0 +1,13 @@
+let
+	const i ~ 5;
+	const f ~ 10;
+	proc P(inicio : Integer,fin: Integer) ~
+		loop for id ~ inicio to fin do
+			putint(id);
+			puteol()
+		repeat
+	end
+	
+in
+	P(i,f)
+end

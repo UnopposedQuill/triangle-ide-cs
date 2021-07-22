@@ -1,0 +1,6 @@
+let
+	const x ~ [0,1];
+	const y ~ 1
+in
+	putint(x[y])
+end

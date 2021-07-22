@@ -1,0 +1,14 @@
+let
+
+	const x ~ 1;
+
+	const x ~ 2;
+
+	var z:Integer
+	
+in
+
+	z := x+y
+
+end
+!error: x declared multiple times.

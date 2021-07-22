@@ -1,0 +1,9 @@
+let
+        proc triplicar(var i : Integer) ~
+            3 > 2
+        end
+in
+    skip
+end
+
+!proc despues del token.IS, viene un Command

@@ -1,0 +1,11 @@
+let
+	var x:Integer;
+	local
+		const y ~ 0
+	in
+		var z init y
+	end;
+	var result:Integer
+in
+result:=x+z
+end
