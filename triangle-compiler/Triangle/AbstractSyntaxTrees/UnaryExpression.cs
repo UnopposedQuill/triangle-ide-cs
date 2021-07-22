@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class UnaryExpression : Expression
     {
-        private Identifier Identifier { get; set; }
-        private TypeDenoter TypeDenoter { get; set; }
+        private Expression Expression { get; set; }
+        private Operator Operator { get; set; }
 
-        public UnaryExpression(Identifier identifier, TypeDenoter typeDenoter,
+        public UnaryExpression(Operator oAST, Expression eAST,
                 SourcePosition position) : base(position)
         {
-            Identifier = identifier;
-            TypeDenoter = typeDenoter;
+            Operator = oAST;
+            Expression = eAST;
         }
 
         public override object Visit(IVisitor v, object o)

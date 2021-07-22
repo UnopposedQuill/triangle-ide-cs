@@ -3,18 +3,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public abstract class AST
     {
-        private SourcePosition position;
+        public SourcePosition Position { get; set; }
         //public RuntimeEntity entity;
 
         public AST(SourcePosition position)
         {
-            this.position = position;
-        }
-
-        public SourcePosition GetPosition()
-        {
-            return position;
-            //entity = null;
+            Position = position;
         }
 
         /**

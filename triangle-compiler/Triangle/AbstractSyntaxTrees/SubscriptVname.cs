@@ -6,7 +6,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         private Expression Expression { get; set; }
         private Vname Vname { get; set; }
 
-        public SubscriptVname(Expression expression, Vname vname,
+        public SubscriptVname(Vname vname, Expression expression,
                 SourcePosition position) : base(position)
         {
             Expression = expression;

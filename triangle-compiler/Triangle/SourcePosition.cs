@@ -2,15 +2,16 @@
 {
     public class SourcePosition
     {
-        public int start, finish;
+        public int Start { set; get; }
+        public int Finish { set; get; }
 
         /**
          * This creates a dummy source position, used for some control elements
          */
         public SourcePosition()
         {
-            start = 0;
-            finish = 0;
+            Start = 0;
+            Finish = 0;
         }
 
         /**
@@ -18,13 +19,13 @@
          */
         public SourcePosition(int start, int finish)
         {
-            this.start = start;
-            this.finish = finish;
+            Start = start;
+            Finish = finish;
         }
 
         public override string ToString()
         {
-            return "(" + start + ", " + finish + ")";
+            return "(" + Start + ", " + Finish + ")";
         }
     }
 }
