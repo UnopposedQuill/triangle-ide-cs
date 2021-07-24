@@ -6,14 +6,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ProcFormalParameter : FormalParameter
     {
-        private Identifier identifier;
-        private FormalParameterSequence formalParameterSequence;
+        public Identifier Identifier { get; }
+        public FormalParameterSequence FormalParameterSequence { get; }
 
         public ProcFormalParameter(Identifier iAST, FormalParameterSequence fpsAST,
                 SourcePosition position) : base(position)
         {
-            identifier = iAST;
-            formalParameterSequence = fpsAST;
+            Identifier = iAST;
+            FormalParameterSequence = fpsAST;
         }
 
         public override object Visit(IVisitor v, object o)
@@ -28,12 +28,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public override bool Equals(object obj)
         {
             return obj is ProcFormalParameter parameter &&
-                    formalParameterSequence.Equals(parameter.formalParameterSequence);
+                    FormalParameterSequence.Equals(parameter.FormalParameterSequence);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(identifier, formalParameterSequence);
+            return HashCode.Combine(Identifier, FormalParameterSequence);
         }
     }
 }

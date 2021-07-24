@@ -3,15 +3,16 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class IfCommand : Command
     {
-        private Expression e;
-        private Command command1, command2;
+        public Expression Expression { get; }
+        public Command Command1 { get; }
+        public Command Command2 { get; }
 
         public IfCommand(Expression e, Command command1, Command command2,
                 SourcePosition position) : base(position)
         {
-            this.e = e;
-            this.command1 = command1;
-            this.command2 = command2;
+            Expression = e;
+            Command1 = command1;
+            Command2 = command2;
         }
 
         public override object Visit(IVisitor v, object o)

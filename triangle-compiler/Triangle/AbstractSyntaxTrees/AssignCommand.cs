@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class AssignCommand : Command
     {
-        private Vname v;
-        public Expression e;
+        public Vname Variable { get; }
+        public Expression Expression { get; }
 
         public AssignCommand(Vname vAST, Expression eAST, SourcePosition position) : base(position)
         {

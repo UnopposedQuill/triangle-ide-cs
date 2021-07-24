@@ -99,5 +99,172 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
         }
 
         #endregion
+
+        #region Commands
+
+        public object VisitAssignCommand(AssignCommand ast, object o)
+        {
+            TypeDenoter variableType = (TypeDenoter)ast.Variable.Visit(this, null);
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            if (!ast.Variable.IsVariable)
+            {
+                errorReporter.ReportError("LHS of assignment is not a variable", "", ast.Variable.Position);
+            }
+            if (!expressionType.Equals(expressionType))
+            {
+                errorReporter.ReportError("assignment incompatibility", "", ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitCallCommand(CallCommand ast, object o)
+        {
+            Declaration binding = o != null ? (Declaration) o : (Declaration)ast.Identifier.Visit(this, null);
+
+            if (binding == null)
+            {
+                //Object referred by the id wasn't found, only allowed on recursive
+                if (identificationTable.RecursiveLevel > 0)
+                {
+                    //Recursive is set and thus I add a new pending call for later binding
+                    identificationTable.AddPendingCall(new PendingCallCommand(new IdentificationTable(identificationTable),ast));
+                }
+                else
+                {
+                    ReportUndeclared(ast.Identifier);
+                }
+            }
+            else if (binding is ProcDeclaration declaration)
+            {
+                ast.ActualParameterSequence.Visit(this, declaration.FormalParameterSequence);
+            }
+            else if (binding is ProcFormalParameter parameter)
+            {
+                ast.ActualParameterSequence.Visit(this, parameter.FormalParameterSequence);
+            }
+            else
+            {
+                errorReporter.ReportError("\"%\" is not a procedure identifier", ast.Identifier.Spelling, ast.Identifier.Position);
+            }
+
+            return null;
+        }
+        
+        public object VisitEmptyCommand(EmptyCommand ast, object o)
+        {
+            return null;
+        }
+        
+        public object VisitIfCommand(IfCommand ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            if (!expressionType.Equals(StdEnvironment.booleanType))
+            {
+                errorReporter.ReportError("Boolean expression expected here", "", ast.Expression.Position);
+            }
+            ast.Command1.Visit(this, null);
+            ast.Command2.Visit(this, null);
+            return null;
+        }
+        
+        public object VisitLetCommand(LetCommand ast, object o)
+        {
+            identificationTable.OpenScope();
+            ast.Declaration.Visit(this, null);
+            ast.Command.Visit(this, null);
+            identificationTable.CloseScope();
+            return null;
+        }
+        
+        public object VisitSequentialCommand(SequentialCommand ast, object o)
+        {
+            ast.Command1.Visit(this, null);
+            ast.Command2.Visit(this, null);
+            return null;
+        }
+        
+        public object VisitWhileLoopCommand(WhileLoopCommand ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter) ast.Expression.Visit(this, null);
+            if (!expressionType.Equals(StdEnvironment.booleanType))
+            {
+                errorReporter.ReportError("Boolean expression expected here", "", ast.Expression.Position);
+            }
+            ast.Command.Visit(this, null);
+            return null;
+        }
+        
+        public object VisitDoWhileLoopCommand(DoWhileLoopCommand ast, object o) {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            if (!expressionType.Equals(StdEnvironment.booleanType))
+            {
+                errorReporter.ReportError("Boolean expression expected here", "", ast.Expression.Position);
+            }
+            ast.Command.Visit(this, null);
+            return null;
+        }
+        
+        public object VisitUntilLoopCommand(UntilLoopCommand ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            if (!expressionType.Equals(StdEnvironment.booleanType))
+            {
+                errorReporter.ReportError("Boolean expression expected here", "", ast.Expression.Position);
+            }
+            ast.Command.Visit(this, null);
+            return null;
+        }
+        
+        public object VisitDoUntilLoopCommand(DoUntilLoopCommand ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            if (!expressionType.Equals(StdEnvironment.booleanType))
+            {
+                errorReporter.ReportError("Boolean expression expected here", "", ast.Expression.Position);
+            }
+            ast.Command.Visit(this, null);
+            return null;
+        }
+
+        public object VisitForLoopCommand(ForLoopCommand ast, object o)
+        {
+            TypeDenoter initialExpressionType = (TypeDenoter)ast.InitialDeclaration.Expression.Visit(this, null);
+            TypeDenoter haltExpressionType = (TypeDenoter)ast.HaltingExpression.Visit(this, null);
+            if (!initialExpressionType.Equals(StdEnvironment.integerType))
+            {
+                errorReporter.ReportError("Integer expression expected here", "", ast.InitialDeclaration.Expression.Position);
+            }
+            if (!haltExpressionType.Equals(StdEnvironment.integerType))
+            {
+                errorReporter.ReportError("Integer expression expected here", "", ast.HaltingExpression.Position);
+            }
+            identificationTable.OpenScope();
+            identificationTable.Enter(ast.InitialDeclaration.Identifier.Spelling, ast.InitialDeclaration);
+            ast.Command.Visit(this, null);
+            identificationTable.CloseScope();
+            return null;
+        }
+
+        #endregion
+
+        #region Standard Environment
+
+        /// <summary>
+        /// Creates a small AST to represent a "declaration" of a standard
+        /// type and enters it in the identification table for standard use
+        /// </summary>
+        /// <param name="id">The identifier "name" of the type</param>
+        /// <param name="typeDenoter">The type bound to be bound to the identifier</param>
+        /// <returns>The bound type denoter for the new type</returns>
+        private TypeDeclaration DeclareStdType(string id, TypeDenoter typeDenoter)
+        {
+            TypeDeclaration binding = new TypeDeclaration(new Identifier(id, DUMMYPOS), typeDenoter, DUMMYPOS);
+            identificationTable.Enter(id, binding);
+            return binding;
+        }
+
+
+
+        #endregion
     }
 }

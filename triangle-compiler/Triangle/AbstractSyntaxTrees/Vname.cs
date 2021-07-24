@@ -3,10 +3,10 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public abstract class Vname : AST
     {
-        private bool IsVariable { get; set; }
-        private bool Indexed { get; set; }
-        private int Offset { get; set; }
-        private TypeDenoter Type { get; set; }
+        public bool IsVariable { get; }
+        public bool Indexed { get; }
+        public int Offset { get; }
+        public TypeDenoter Type { get; }
         
         /**
          * Will create a new vname, but filling it is up to the caller

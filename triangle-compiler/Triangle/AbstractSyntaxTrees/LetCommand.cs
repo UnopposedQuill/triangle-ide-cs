@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class LetCommand : Command
     {
-        private Declaration declaration;
-        private Command command;
+        public Declaration Declaration { get; }
+        public Command Command { get; }
 
         public LetCommand(Declaration declaration, Command command,
                 SourcePosition position) : base(position)
         {
-            this.declaration = declaration;
-            this.command = command;
+            Declaration = declaration;
+            Command = command;
         }
 
         public override object Visit(IVisitor v, object o)

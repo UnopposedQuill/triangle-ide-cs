@@ -3,16 +3,16 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ProcDeclaration : Declaration
     {
-        private Identifier identifier;
-        private FormalParameterSequence formalParameterSequence;
-        private Command command;
+        public Identifier Identifier { get;}
+        public FormalParameterSequence FormalParameterSequence { get; }
+        public Command Command { get; }
 
         public ProcDeclaration(Identifier iAST, FormalParameterSequence fpsAST,
                 Command cAST, SourcePosition position) : base(position)
         {
-            identifier = iAST;
-            formalParameterSequence = fpsAST;
-            command = cAST;
+            Identifier = iAST;
+            FormalParameterSequence = fpsAST;
+            Command = cAST;
         }
 
         public override object Visit(IVisitor v, object o)

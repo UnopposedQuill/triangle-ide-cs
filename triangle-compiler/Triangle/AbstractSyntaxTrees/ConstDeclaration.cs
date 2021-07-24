@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ConstDeclaration : Declaration
     {
-        private Identifier identifier;
-        private Expression e;
+        public Identifier Identifier { get;}
+        public Expression Expression { get; }
 
         public ConstDeclaration(Identifier iAST, Expression eAST,
                 SourcePosition position) : base(position)
         {
-            identifier = iAST;
-            e = eAST;
+            Identifier = iAST;
+            Expression = eAST;
         }
 
         public override object Visit(IVisitor v, object o)
