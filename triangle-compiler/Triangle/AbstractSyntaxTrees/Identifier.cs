@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class Identifier : Terminal
     {
-        private TypeDenoter Type { get; set; }
-        private AST Declaration { get; set; } // Either a Declaration or a FieldTypeDenoter
+        public TypeDenoter Type { get; set; }
+        public AST Declaration { get; set; } // Either a Declaration or a FieldTypeDenoter
 
         public Identifier(string spelling, SourcePosition position) : base(spelling, position)
         {
@@ -14,8 +14,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         public override bool Equals(object obj)
         {
-            
-            return obj is Identifier identifier && GetSpelling().Equals(identifier.GetSpelling());
+            return obj is Identifier identifier && Spelling.Equals(identifier.Spelling);
         }
 
         public override int GetHashCode()

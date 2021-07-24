@@ -2,6 +2,7 @@
 
 using TriangleCompiler.Triangle.AbstractSyntaxTrees;
 using TriangleCompiler.Triangle.SyntacticAnalyzer;
+using TriangleCompiler.Triangle.ContextualAnalyzer;
 
 namespace TriangleCompiler.Triangle
 {
@@ -13,8 +14,8 @@ namespace TriangleCompiler.Triangle
         private static ErrorReporter errorReporter;
         private static Scanner scanner;
         private static Parser parser;
-        /*private static Checker checker;
-        private static Encoder encoder;
+        private static Checker checker;
+        /*private static Encoder encoder;
         private static Drawer drawer;*/
 
         private static Program programAST;
@@ -55,7 +56,7 @@ namespace TriangleCompiler.Triangle
             {
                 Console.WriteLine("Lexical Analysis ...");
                 SourceFile sourceFile = new(sourceName);
-                Scanner HTMLScanner = new Scanner(sourceFile);
+                Scanner HTMLScanner = new(sourceFile);
                 HTMLScanner.HTMLRun(new ProgramWriter.HTMLWriter(sourceName[sourceName.LastIndexOf('/')..].Replace(".tri", "")));
             }
             
@@ -74,30 +75,37 @@ namespace TriangleCompiler.Triangle
             scanner = new Scanner(source);
             errorReporter = new ErrorReporter();
             parser = new Parser(scanner, errorReporter);
-            /*checker = new Checker(errorReporter);
-            encoder = new Encoder(errorReporter);
+            checker = new Checker(errorReporter);
+            /*encoder = new Encoder(errorReporter);
             drawer = new Drawer();*/
 
             // scanner.enableDebugging();
             programAST = parser.ParseProgram();             // 1st pass
-            /*if (errorReporter.getErrorCount() == 0)
+            if (errorReporter.getErrorCount() == 0)
             {
                 //if (showingAST) {
                 //    drawer.draw(programAST);
                 //}
 
+                if (showingXML)
+                {
+                    WriteXMLProgram(programAST, sourceName[sourceName.LastIndexOf('/')..].Replace(".tri", ""));
+                }
+
                 Console.WriteLine("Contextual Analysis ...");
-                checker.check(programAST);              // 2nd pass
-                if (showingAST)
+                checker.Check(programAST);              // 2nd pass
+                
+                /*if (showingAST)
                 {
                     drawer.draw(programAST);
-                }
-                if (errorReporter.getErrorCount() == 0)
+                }*/
+                
+                /*if (errorReporter.getErrorCount() == 0)
                 {
                     Console.WriteLine("Code Generation ...");
                     encoder.encodeRun(programAST, showingTable);    // 3rd pass
-                }
-            }*/
+                }*/
+            }
 
             bool successful = errorReporter.getErrorCount() == 0;
             if (successful)

@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class Program : AST
     {
-        private Command c;
+        public Command Command { get; }
 
         public Program(Command cAST, SourcePosition position) : base(position)
         {
-            c = cAST;
+            Command = cAST;
         }
 
         public override object Visit(IVisitor v, object o)

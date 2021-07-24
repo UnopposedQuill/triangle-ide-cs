@@ -3,34 +3,34 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class MultipleFieldTypeDenoter : FieldTypeDenoter
     {
-        private Identifier identifier;
-        private TypeDenoter typeDenoter;
-        private FieldTypeDenoter fieldTypeDenoter;
+        public Identifier Identifier { get; }
+        public TypeDenoter TypeDenoter { get; }
+        public FieldTypeDenoter FieldTypeDenoter { get; }
 
         public MultipleFieldTypeDenoter(Identifier identifier, TypeDenoter typeDenoter,
                 FieldTypeDenoter fieldTypeDenoter, SourcePosition position) : base(position)
         {
-            this.identifier = identifier;
-            this.typeDenoter = typeDenoter;
-            this.fieldTypeDenoter = fieldTypeDenoter;
+            Identifier = identifier;
+            TypeDenoter = typeDenoter;
+            FieldTypeDenoter = fieldTypeDenoter;
         }
 
         public override bool Equals(object obj)
         {
             return obj is MultipleFieldTypeDenoter denoter &&
-                   identifier.GetSpelling().Equals(denoter.identifier.GetSpelling()) &&
-                   typeDenoter.Equals(denoter.typeDenoter) &&
-                   fieldTypeDenoter.Equals(denoter.fieldTypeDenoter);;
+                   Identifier.Spelling.Equals(denoter.Identifier.Spelling) &&
+                   TypeDenoter.Equals(denoter.TypeDenoter) &&
+                   FieldTypeDenoter.Equals(denoter.FieldTypeDenoter);;
         }
 
         public override int GetHashCode()
         {
-            return System.HashCode.Combine(base.GetHashCode(), identifier, typeDenoter, fieldTypeDenoter);
+            return System.HashCode.Combine(base.GetHashCode(), Identifier, TypeDenoter, FieldTypeDenoter);
         }
 
         public override object Visit(IVisitor v, object o)
         {
-            throw new System.NotImplementedException();
+            return v.VisitMultipleFieldTypeDenoter(this, o);
         }
     }
 }

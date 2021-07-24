@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class CallExpression : Expression
     {
-        private Identifier identifier;
-        private ActualParameterSequence aps;
+        internal Identifier Identifier { get; }
+        internal ActualParameterSequence ActualParameterSequence { get; }
 
         public CallExpression(Identifier iAST, ActualParameterSequence apsAST,
                 SourcePosition position) : base(position)
         {
-            identifier = iAST;
-            aps = apsAST;
+            Identifier = iAST;
+            ActualParameterSequence = apsAST;
         }
 
         public override object Visit(IVisitor v, object o)

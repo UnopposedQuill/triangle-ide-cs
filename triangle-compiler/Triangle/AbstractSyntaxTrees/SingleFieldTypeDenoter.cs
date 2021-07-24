@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SingleFieldTypeDenoter : FieldTypeDenoter
     {
-        private Identifier Identifier { get; set; }
-        private TypeDenoter TypeDenoter { get; set; }
+        public Identifier Identifier { get; }
+        public TypeDenoter TypeDenoter { get; }
 
         public SingleFieldTypeDenoter(Identifier identifier, TypeDenoter typeDenoter,
                 SourcePosition position) : base(position)
@@ -21,7 +21,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public override bool Equals(object obj)
         {
             return obj is SingleFieldTypeDenoter denoter &&
-                    Identifier.GetSpelling().Equals(denoter.Identifier.GetSpelling()) &&
+                    Identifier.Spelling.Equals(denoter.Identifier.Spelling) &&
                     TypeDenoter.Equals(denoter.TypeDenoter);
         }
 

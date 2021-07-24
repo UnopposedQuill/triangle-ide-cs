@@ -1,7 +1,7 @@
 ﻿
 namespace TriangleCompiler.Triangle
 {
-    class ErrorReporter
+    public class ErrorReporter
     {
         private int errorCount;
 

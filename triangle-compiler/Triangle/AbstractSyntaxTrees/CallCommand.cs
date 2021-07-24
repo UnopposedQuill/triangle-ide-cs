@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class CallCommand : Command
     {
-        private Identifier identifier;
-        private ActualParameterSequence aps;
+        public Identifier Identifier { get; }
+        public ActualParameterSequence ActualParameterSequence { get; }
 
         public CallCommand(Identifier iAST, ActualParameterSequence apsAST,
                 SourcePosition position) : base(position)
         {
-            identifier = iAST;
-            aps = apsAST;
+            Identifier = iAST;
+            ActualParameterSequence = apsAST;
         }
 
         public override object Visit(IVisitor v, object o)
