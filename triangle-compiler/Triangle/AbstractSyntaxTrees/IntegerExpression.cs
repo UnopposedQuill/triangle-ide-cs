@@ -3,12 +3,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class IntegerExpression : Expression
     {
-        private IntegerLiteral integerLiteral;
+        public IntegerLiteral IntegerLiteral { get; }
 
         public IntegerExpression(IntegerLiteral integerLiteral,
             SourcePosition position) : base(position)
         {
-            this.integerLiteral = integerLiteral;
+            IntegerLiteral = integerLiteral;
         }
 
         public override object Visit(IVisitor v, object o)

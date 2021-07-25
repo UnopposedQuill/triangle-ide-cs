@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ArrayExpression : Expression
     {
-        private ArrayAggregate aa;
+        public ArrayAggregate ArrayAggregate { get; }
 
         public ArrayExpression(ArrayAggregate aaAST, SourcePosition position) : base(position)
         {
-            aa = aaAST;
+            ArrayAggregate = aaAST;
         }
 
         public override object Visit(IVisitor v, object o)

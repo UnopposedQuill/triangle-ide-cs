@@ -5,16 +5,16 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class FuncFormalParameter : FormalParameter
     {
-        private Identifier identifier;
-        private FormalParameterSequence fps;
-        private TypeDenoter type;
+        public Identifier Identifier { get; }
+        public FormalParameterSequence FormalParameterSequence { get; }
+        public TypeDenoter Type { get; }
 
         public FuncFormalParameter(Identifier identifier, FormalParameterSequence fpsAST,
                 TypeDenoter tAST, SourcePosition position) : base(position)
         {
-            this.identifier = identifier;
-            fps = fpsAST;
-            type = tAST;
+            this.Identifier = identifier;
+            FormalParameterSequence = fpsAST;
+            Type = tAST;
         }
 
         /**
@@ -23,12 +23,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
          */
         public override bool Equals(object obj)
         {
-            return obj is FuncFormalParameter ffp && fps.Equals(ffp.fps) && type.Equals(ffp.type);
+            return obj is FuncFormalParameter ffp && FormalParameterSequence.Equals(ffp.FormalParameterSequence) && Type.Equals(ffp.Type);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(identifier, fps, type);
+            return HashCode.Combine(base.GetHashCode(), Identifier, FormalParameterSequence, Type);
         }
 
         public override object Visit(IVisitor v, object o)

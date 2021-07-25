@@ -8,8 +8,9 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
     {
         private IdentificationTable identificationTable;
         private readonly ErrorReporter errorReporter;
-        private static readonly SourcePosition DUMMYPOS = new();
 
+        private static readonly SourcePosition DUMMYPOS = new();
+        private static readonly Identifier DUMMYIDENTIFIER = new("", DUMMYPOS);
 
         public Checker(ErrorReporter errorReporter)
         {
@@ -100,8 +101,153 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
 
         #endregion
 
+        #region Standard Environment
+
+        /// <summary>
+        /// Creates a small AST to represent a "declaration" of a standard
+        /// type and enters it in the identification table for standard use
+        /// </summary>
+        /// <param name="id">The identifier "name" of the type</param>
+        /// <param name="typeDenoter">The type bound to be bound to the identifier</param>
+        /// <returns>The bound type denoter for the new type</returns>
+        private TypeDeclaration DeclareStdType(string id, TypeDenoter typeDenoter)
+        {
+            TypeDeclaration binding = new(new Identifier(id, DUMMYPOS), typeDenoter, DUMMYPOS);
+            identificationTable.Enter(id, binding);
+            return binding;
+        }
+
+        // Creates a small AST to represent the "declaration" of a standard
+        // constant, and enters it in the identification table.
+        private ConstDeclaration DeclareStdConst(string id, TypeDenoter constType)
+        {
+            // constExpr used only as a placeholder for constType
+            IntegerExpression constExpr = new(null, DUMMYPOS);
+            constExpr.Type = constType;
+
+            ConstDeclaration binding = new ConstDeclaration(new Identifier(id, DUMMYPOS),
+                                                                constExpr,
+                                                                DUMMYPOS);
+            identificationTable.Enter(id, binding);
+            return binding;
+        }
+
+        // Creates a small AST to represent the "declaration" of a standard
+        // procedure, and enters it in the identification table.
+        private ProcDeclaration DeclareStdProc(string id, FormalParameterSequence fps)
+        {
+
+            ProcDeclaration binding;
+
+            binding = new ProcDeclaration(new Identifier(id, DUMMYPOS), fps,
+                    new EmptyCommand(DUMMYPOS), DUMMYPOS);
+            identificationTable.Enter(id, binding);
+            return binding;
+        }
+
+        // Creates a small AST to represent the "declaration" of a standard
+        // function, and enters it in the identification table.
+        private FuncDeclaration DeclareStdFunc(string id, FormalParameterSequence fps,
+                TypeDenoter resultType)
+        {
+
+            FuncDeclaration binding;
+
+            binding = new FuncDeclaration(new Identifier(id, DUMMYPOS), fps, resultType,
+                    new EmptyExpression(DUMMYPOS), DUMMYPOS);
+            identificationTable.Enter(id, binding);
+            return binding;
+        }
+
+        // Creates a small AST to represent the "declaration" of a
+        // unary operator, and enters it in the identification table.
+        // This "declaration" summarises the operator's type info.
+        private UnaryOperatorDeclaration DeclareStdUnaryOp(string op, TypeDenoter argType, TypeDenoter resultType)
+        {
+
+            UnaryOperatorDeclaration binding;
+
+            binding = new UnaryOperatorDeclaration(new Operator(op, DUMMYPOS),
+                    argType, resultType, DUMMYPOS);
+            identificationTable.Enter(op, binding);
+            return binding;
+        }
+
+        // Creates a small AST to represent the "declaration" of a
+        // binary operator, and enters it in the identification table.
+        // This "declaration" summarises the operator's type info.
+        private BinaryOperatorDeclaration DeclareStdBinaryOp(string op, TypeDenoter arg1Type, TypeDenoter arg2type, TypeDenoter resultType)
+        {
+
+            BinaryOperatorDeclaration binding;
+
+            binding = new BinaryOperatorDeclaration(new Operator(op, DUMMYPOS),
+                    arg1Type, arg2type, resultType, DUMMYPOS);
+            identificationTable.Enter(op, binding);
+            return binding;
+        }
+
+        // Creates small ASTs to represent the standard types.
+        // Creates small ASTs to represent "declarations" of standard types,
+        // constants, procedures, functions, and operators.
+        // Enters these "declarations" in the identification table.
+
+        private void EstablishStdEnvironment()
+        {
+
+            // idTable.startIdentification();
+            StdEnvironment.booleanType = new BoolTypeDenoter(DUMMYPOS);
+            StdEnvironment.integerType = new IntTypeDenoter(DUMMYPOS);
+            StdEnvironment.charType = new CharTypeDenoter(DUMMYPOS);
+            StdEnvironment.anyType = new AnyTypeDenoter(DUMMYPOS);
+            StdEnvironment.errorType = new ErrorTypeDenoter(DUMMYPOS);
+
+            StdEnvironment.booleanDecl = DeclareStdType("Boolean", StdEnvironment.booleanType);
+            StdEnvironment.falseDecl = DeclareStdConst("false", StdEnvironment.booleanType);
+            StdEnvironment.trueDecl = DeclareStdConst("true", StdEnvironment.booleanType);
+            StdEnvironment.notDecl = DeclareStdUnaryOp("\\", StdEnvironment.booleanType, StdEnvironment.booleanType);
+            StdEnvironment.negDecl = DeclareStdUnaryOp("-", StdEnvironment.integerType, StdEnvironment.integerType);
+            StdEnvironment.andDecl = DeclareStdBinaryOp("/\\", StdEnvironment.booleanType, StdEnvironment.booleanType, StdEnvironment.booleanType);
+            StdEnvironment.orDecl = DeclareStdBinaryOp("\\/", StdEnvironment.booleanType, StdEnvironment.booleanType, StdEnvironment.booleanType);
+
+            StdEnvironment.integerDecl = DeclareStdType("Integer", StdEnvironment.integerType);
+            StdEnvironment.maxintDecl = DeclareStdConst("maxint", StdEnvironment.integerType);
+            StdEnvironment.addDecl = DeclareStdBinaryOp("+", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.integerType);
+            StdEnvironment.subtractDecl = DeclareStdBinaryOp("-", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.integerType);
+            StdEnvironment.multiplyDecl = DeclareStdBinaryOp("*", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.integerType);
+            StdEnvironment.divideDecl = DeclareStdBinaryOp("/", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.integerType);
+            StdEnvironment.moduloDecl = DeclareStdBinaryOp("//", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.integerType);
+            StdEnvironment.lessDecl = DeclareStdBinaryOp("<", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.booleanType);
+            StdEnvironment.notgreaterDecl = DeclareStdBinaryOp("<=", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.booleanType);
+            StdEnvironment.greaterDecl = DeclareStdBinaryOp(">", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.booleanType);
+            StdEnvironment.notlessDecl = DeclareStdBinaryOp(">=", StdEnvironment.integerType, StdEnvironment.integerType, StdEnvironment.booleanType);
+
+            StdEnvironment.charDecl = DeclareStdType("Char", StdEnvironment.charType);
+            StdEnvironment.chrDecl = DeclareStdFunc("chr", new SingleFormalParameterSequence(
+                    new ConstFormalParameter(DUMMYIDENTIFIER, StdEnvironment.integerType, DUMMYPOS), DUMMYPOS), StdEnvironment.charType);
+            StdEnvironment.ordDecl = DeclareStdFunc("ord", new SingleFormalParameterSequence(
+                    new ConstFormalParameter(DUMMYIDENTIFIER, StdEnvironment.charType, DUMMYPOS), DUMMYPOS), StdEnvironment.integerType);
+            StdEnvironment.eofDecl = DeclareStdFunc("eof", new EmptyFormalParameterSequence(DUMMYPOS), StdEnvironment.booleanType);
+            StdEnvironment.eolDecl = DeclareStdFunc("eol", new EmptyFormalParameterSequence(DUMMYPOS), StdEnvironment.booleanType);
+            StdEnvironment.getDecl = DeclareStdProc("get", new SingleFormalParameterSequence(
+                    new VarFormalParameter(DUMMYIDENTIFIER, StdEnvironment.charType, DUMMYPOS), DUMMYPOS));
+            StdEnvironment.putDecl = DeclareStdProc("put", new SingleFormalParameterSequence(
+                    new ConstFormalParameter(DUMMYIDENTIFIER, StdEnvironment.charType, DUMMYPOS), DUMMYPOS));
+            StdEnvironment.getintDecl = DeclareStdProc("getint", new SingleFormalParameterSequence(
+                    new VarFormalParameter(DUMMYIDENTIFIER, StdEnvironment.integerType, DUMMYPOS), DUMMYPOS));
+            StdEnvironment.putintDecl = DeclareStdProc("putint", new SingleFormalParameterSequence(
+                    new ConstFormalParameter(DUMMYIDENTIFIER, StdEnvironment.integerType, DUMMYPOS), DUMMYPOS));
+            StdEnvironment.geteolDecl = DeclareStdProc("geteol", new EmptyFormalParameterSequence(DUMMYPOS));
+            StdEnvironment.puteolDecl = DeclareStdProc("puteol", new EmptyFormalParameterSequence(DUMMYPOS));
+            StdEnvironment.equalDecl = DeclareStdBinaryOp("=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);
+            StdEnvironment.unequalDecl = DeclareStdBinaryOp("\\=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);
+        }
+
+        #endregion
+
         #region Commands
 
+        //These always are to return null and not use the given object.
         public object VisitAssignCommand(AssignCommand ast, object o)
         {
             TypeDenoter variableType = (TypeDenoter)ast.Variable.Visit(this, null);
@@ -110,7 +256,7 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
             {
                 errorReporter.ReportError("LHS of assignment is not a variable", "", ast.Variable.Position);
             }
-            if (!expressionType.Equals(expressionType))
+            if (!expressionType.Equals(variableType))
             {
                 errorReporter.ReportError("assignment incompatibility", "", ast.Position);
             }
@@ -119,7 +265,7 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
 
         public object VisitCallCommand(CallCommand ast, object o)
         {
-            Declaration binding = o != null ? (Declaration) o : (Declaration)ast.Identifier.Visit(this, null);
+            Declaration binding = (Declaration) o ?? (Declaration)ast.Identifier.Visit(this, null);
 
             if (binding == null)
             {
@@ -247,23 +393,149 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
 
         #endregion
 
-        #region Standard Environment
+        #region Expressions
+        //These are to always return the TypeDenoter of the type of the expression
+        //as well as not use the given object
 
-        /// <summary>
-        /// Creates a small AST to represent a "declaration" of a standard
-        /// type and enters it in the identification table for standard use
-        /// </summary>
-        /// <param name="id">The identifier "name" of the type</param>
-        /// <param name="typeDenoter">The type bound to be bound to the identifier</param>
-        /// <returns>The bound type denoter for the new type</returns>
-        private TypeDeclaration DeclareStdType(string id, TypeDenoter typeDenoter)
+        //Their purpose is to define the type in these expressions, then mark their
+        //ASTs.Type, which will be returned
+        public object VisitArrayExpression(ArrayExpression ast, object o)
         {
-            TypeDeclaration binding = new TypeDeclaration(new Identifier(id, DUMMYPOS), typeDenoter, DUMMYPOS);
-            identificationTable.Enter(id, binding);
-            return binding;
+            TypeDenoter elementType = (TypeDenoter)ast.ArrayAggregate.Visit(this, null);
+            IntegerLiteral integer = new(System.Convert.ToString(ast.ArrayAggregate.ElementCount), ast.Position);
+            ast.Type = new ArrayTypeDenoter(integer, elementType, ast.Position);
+            return ast.Type;
         }
 
+        public object VisitBinaryExpression(BinaryExpression ast, object o)
+        {
+            TypeDenoter expression1Type = (TypeDenoter)ast.Expression1.Visit(this, null);
+            TypeDenoter expression2Type = (TypeDenoter)ast.Expression2.Visit(this, null);
 
+            Declaration operatorBinding = (Declaration)ast.Operator.Visit(this, null);
+            if (operatorBinding == null)
+            {
+                ReportUndeclared(ast.Operator);
+                ast.Type = StdEnvironment.errorType;
+            }
+            else
+            {
+                if (operatorBinding is BinaryOperatorDeclaration binaryOperator)
+                {
+                    if (binaryOperator.Argument1Type == StdEnvironment.anyType)
+                    {
+                        //Operator is "=" or "/="
+                        if (!expression1Type.Equals(expression2Type))
+                        {
+                            errorReporter.ReportError("incompatible argument types for \"%\"",
+                            ast.Operator.Spelling, ast.Position);
+                        }
+                    }
+                    else if (!expression1Type.Equals(binaryOperator.Argument1Type))
+                    {
+                        errorReporter.ReportError("wrong argument type for \"%\"",
+                        ast.Operator.Spelling, ast.Expression1.Position);
+                    }
+                    else if (!expression2Type.Equals(binaryOperator.Argument2Type))
+                    {
+                        errorReporter.ReportError("wrong argument type for \"%\"",
+                        ast.Operator.Spelling, ast.Expression2.Position);
+                    }
+                    ast.Type = binaryOperator.ResultType;
+                }
+                else
+                {
+                    errorReporter.ReportError("\"%\" is not a binary operator",
+                            ast.Operator.Spelling, ast.Operator.Position);
+                    ast.Type = StdEnvironment.errorType;
+                }
+            }
+            return ast.Type;
+        }
+
+        public object VisitCallExpression(CallExpression ast, object o)
+        {
+            //Bind it to either the parameter, or by searching it
+            Declaration binding = (Declaration)o ?? (Declaration) ast.Identifier.Visit(this, null);
+
+            if (binding == null)
+            {
+                if (identificationTable.RecursiveLevel > 0)
+                {
+                    identificationTable.AddPendingCall(new PendingCallExpression(new IdentificationTable(identificationTable), ast));
+                }
+                else
+                {
+                    ReportUndeclared(ast.Identifier);
+                    ast.Type = StdEnvironment.errorType;
+                }
+            }
+            else if (binding is FuncDeclaration func)
+            {
+                ast.ActualParameterSequence.Visit(this, func.FormalParameterSequence);
+                ast.Type = func.Type;
+
+                //I filter the expressions that are the same as the ast, whose types
+                //don't match, and issue an error for each of them.
+                identificationTable.FutureCallExpressions.FindAll(futureCallExpression => 
+                        futureCallExpression.Expression == ast && 
+                        !futureCallExpression.TypeDenoterToCheck.Equals(ast.Type)
+                    ).ForEach(wrongTypeFunction => errorReporter.ReportError("body of function \"%\" has wrong type", ast.Identifier.Spelling, ast.Position)
+                );
+            }
+            else if (binding is FuncFormalParameter funcFormalParameter)
+            {
+                ast.ActualParameterSequence.Visit(this, funcFormalParameter.FormalParameterSequence);
+                ast.Type = funcFormalParameter.Type;
+            }
+            else
+            {
+                errorReporter.ReportError("\"%\" is not a function identifier", ast.Identifier.Spelling, ast.Identifier.Position);
+                ast.Type = StdEnvironment.errorType;
+            }
+
+            return ast.Type;
+        }
+
+        public object VisitCharacterExpression(CharacterExpression ast, object o)
+        {
+
+        }
+
+        public object VisitEmptyExpression(EmptyExpression ast, object o)
+        {
+
+        }
+
+        public object VisitIfExpression(IfExpression ast, object o)
+        {
+
+        }
+
+        public object VisitIntegerExpression(IntegerExpression ast, object o)
+        {
+
+        }
+
+        public object VisitLetExpression(LetExpression ast, object o)
+        {
+
+        }
+
+        public object VisitRecordExpression(RecordExpression ast, object o)
+        {
+
+        }
+
+        public object VisitUnaryExpression(UnaryExpression ast, object o)
+        {
+
+        }
+
+        public object VisitVnameExpression(VnameExpression ast, object o)
+        {
+
+        }
 
         #endregion
     }
