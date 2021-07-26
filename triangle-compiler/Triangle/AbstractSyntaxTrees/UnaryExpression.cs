@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class UnaryExpression : Expression
     {
-        private Expression Expression { get; set; }
-        private Operator Operator { get; set; }
+        public Expression Expression { get; }
+        public Operator Operator { get; }
 
         public UnaryExpression(Operator oAST, Expression eAST,
                 SourcePosition position) : base(position)

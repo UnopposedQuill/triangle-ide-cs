@@ -5,7 +5,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
     {
         public Identifier Identifier { get; }
         public FormalParameterSequence FormalParameterSequence { get; }
-        public TypeDenoter Type { get;}
+        public TypeDenoter Type { get; internal set; }
         public Expression Expression { get; }
 
         public FuncDeclaration(Identifier identifier, FormalParameterSequence fps,

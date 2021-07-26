@@ -3,9 +3,9 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class UnaryOperatorDeclaration : Declaration
     {
-        private Operator Operator { get; set; }
-        private TypeDenoter ArgumentTypeDenoter { get; set; }
-        private TypeDenoter ResultTypeDenoter { get; set; }
+        public Operator Operator { get; }
+        public TypeDenoter ArgumentTypeDenoter { get; }
+        public TypeDenoter ResultTypeDenoter { get; }
 
         public UnaryOperatorDeclaration(Operator @operator, TypeDenoter argumentTypeDenoter, TypeDenoter resultTypeDenoter,
                 SourcePosition position) : base(position)

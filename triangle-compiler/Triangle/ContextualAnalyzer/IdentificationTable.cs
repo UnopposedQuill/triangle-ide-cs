@@ -9,7 +9,7 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
         internal int RecursiveLevel { get; set; }
         private IdentifierEntry LastestEntry { get; set; }
 
-        internal List<PendingCall> PendingCalls { get; }
+        internal List<PendingCall> PendingCalls { get; set; }
         internal List<FutureCallExpression> FutureCallExpressions { get; }
 
         internal IdentificationTable()

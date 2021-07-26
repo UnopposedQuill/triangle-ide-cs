@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class TypeDeclaration : Declaration
     {
-        private Identifier Identifier { get; set; }
-        private TypeDenoter TypeDenoter { get; set; }
+        public Identifier Identifier { get; }
+        public TypeDenoter TypeDenoter { get; internal set; }
 
         public TypeDeclaration(Identifier identifier, TypeDenoter typeDenoter,
                 SourcePosition position) : base(position)

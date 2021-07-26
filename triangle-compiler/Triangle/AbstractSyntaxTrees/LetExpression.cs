@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class LetExpression : Expression
     {
-        private Declaration declaration;
-        private Expression expression;
+        public Declaration Declaration { get; }
+        public Expression Expression { get; }
 
         public LetExpression(Declaration declaration, Expression expression,
                 SourcePosition position) : base(position)
         {
-            this.declaration = declaration;
-            this.expression = expression;
+            Declaration = declaration;
+            Expression = expression;
         }
 
         public override object Visit(IVisitor v, object o)

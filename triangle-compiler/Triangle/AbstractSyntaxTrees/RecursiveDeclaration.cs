@@ -3,12 +3,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class RecursiveDeclaration : Declaration
     {
-        private Declaration declaration;
+        public Declaration Declaration { get; }
 
         public RecursiveDeclaration(Declaration dAST, SourcePosition position)
             : base(position)
         {
-            declaration = dAST;
+            Declaration = dAST;
         }
 
         public override object Visit(IVisitor v, object o)

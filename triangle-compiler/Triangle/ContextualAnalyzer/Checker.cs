@@ -412,7 +412,7 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
             TypeDenoter expression1Type = (TypeDenoter)ast.Expression1.Visit(this, null);
             TypeDenoter expression2Type = (TypeDenoter)ast.Expression2.Visit(this, null);
 
-            Declaration operatorBinding = (Declaration)ast.Operator.Visit(this, null);
+            Declaration operatorBinding = (Declaration)ast.Operator.Visit(this, ast.GetType());
             if (operatorBinding == null)
             {
                 ReportUndeclared(ast.Operator);
@@ -499,42 +499,227 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
 
         public object VisitCharacterExpression(CharacterExpression ast, object o)
         {
-
+            ast.Type = StdEnvironment.charType;
+            return ast.Type;
         }
 
         public object VisitEmptyExpression(EmptyExpression ast, object o)
         {
-
+            return null;
         }
 
         public object VisitIfExpression(IfExpression ast, object o)
         {
-
+            TypeDenoter conditionType = (TypeDenoter)ast.ConditionExpression.Visit(this, null);
+            if (!conditionType.Equals(StdEnvironment.booleanType))
+            {
+                errorReporter.ReportError("Boolean expression expected here", "", ast.ConditionExpression.Position);
+            }
+            TypeDenoter expression1Type = (TypeDenoter)ast.Expression1.Visit(this, null);
+            TypeDenoter expression2Type = (TypeDenoter)ast.Expression2.Visit(this, null);
+            if (!expression1Type.Equals(expression2Type))
+            {
+                errorReporter.ReportError("incompatible limbs in if expression", "", ast.Position);
+            }
+            ast.Type = expression2Type;
+            return ast.Type;
         }
 
         public object VisitIntegerExpression(IntegerExpression ast, object o)
         {
-
+            ast.Type = StdEnvironment.integerType;
+            return null;
         }
 
         public object VisitLetExpression(LetExpression ast, object o)
         {
-
+            identificationTable.OpenScope();
+            ast.Declaration.Visit(this, null);
+            ast.Type = (TypeDenoter)ast.Expression.Visit(this, null);
+            return ast.Type;
         }
 
         public object VisitRecordExpression(RecordExpression ast, object o)
         {
-
+            FieldTypeDenoter fieldType = (FieldTypeDenoter)ast.RecordAggregate.Visit(this, null);
+            ast.Type = new RecordTypeDenoter(fieldType, ast.Position);
+            return ast.Type;
         }
 
         public object VisitUnaryExpression(UnaryExpression ast, object o)
         {
-
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            Declaration binding = (Declaration)ast.Operator.Visit(this, ast.GetType());
+            if (binding == null)
+            {
+                ReportUndeclared(ast.Operator);
+                ast.Type = StdEnvironment.errorType;
+            }
+            else if (binding is UnaryOperatorDeclaration unaryOperator)
+            {
+                if (!expressionType.Equals(unaryOperator.ArgumentTypeDenoter))
+                {
+                    errorReporter.ReportError("wrong argument type for \"%\"", ast.Operator.Spelling, ast.Operator.Position);
+                }
+                ast.Type = unaryOperator.ResultTypeDenoter;
+            }
+            else
+            {
+                errorReporter.ReportError("\"%\" is not an unary operator", ast.Operator.Spelling, ast.Operator.Position);
+                ast.Type = StdEnvironment.errorType;
+            }
+            return ast.Type;
         }
 
         public object VisitVnameExpression(VnameExpression ast, object o)
         {
+            ast.Type = (TypeDenoter)ast.Vname.Visit(this, null);
+            return ast.Type;
+        }
 
+        #endregion
+
+        #region Declarations
+        //Always return null. They don't use the given object.
+        //These will make sure the component is not redefining things.
+        
+        //@TODO: Implement
+        public object VisitBinaryOperatorDeclaration(BinaryOperatorDeclaration ast, object o)
+        {
+            return null;//For now, every declaration is correct
+        }
+
+        public object VisitConstDeclaration(ConstDeclaration ast, object o)
+        {
+            _ = ast.Expression.Visit(this, null);//Develop the type of the Declaration
+            identificationTable.Enter(ast.Identifier.Spelling, ast);//Add it as a new identifier
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("identifier \"%\" already declared", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitFuncDeclaration(FuncDeclaration ast, object o)
+        {
+            ast.Type = (TypeDenoter)ast.Expression.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast); //allows recursion
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("identifier \"%\" already declared", ast.Identifier.Spelling, ast.Position);
+            }
+
+            identificationTable.OpenScope();
+            ast.FormalParameterSequence.Visit(this, null);
+            VisitPendingCalls(ast.Identifier);
+
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            identificationTable.CloseScope();
+
+            if (expressionType == null)
+            {
+                //It is a future call, thus we don't know its type yet
+                identificationTable.AddFutureCallExpression(new FutureCallExpression(ast.Type, ast.Expression));
+            }
+            else if (!ast.Type.Equals(expressionType))
+            {
+                errorReporter.ReportError("body of function \"%\" has wrong type", ast.Identifier.Spelling, ast.Expression.Position);
+            }
+            return null;
+        }
+
+        public object VisitProcDeclaration(ProcDeclaration ast, object o)
+        {
+            identificationTable.Enter(ast.Identifier.Spelling, ast); //allows recursion
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("identifier \"%\" already declared", ast.Identifier.Spelling, ast.Position);
+            }
+
+            identificationTable.OpenScope();
+            ast.FormalParameterSequence.Visit(this, null);
+            VisitPendingCalls(ast.Identifier);
+
+            ast.Command.Visit(this, null);
+            identificationTable.CloseScope();
+            return null;
+        }
+
+        public object VisitSequentialDeclaration(SequentialDeclaration ast, object o)
+        {
+            ast.Declaration1.Visit(this, null);
+            ast.Declaration2.Visit(this, null);
+            return null;
+        }
+
+        public object VisitTypeDeclaration(TypeDeclaration ast, object o)
+        {
+            ast.TypeDenoter = (TypeDenoter)ast.TypeDenoter.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("identifier \"%\" already declared",ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        //@TODO: Implement
+        public object VisitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, object o)
+        {
+            return null;//For now, every declaration is correct
+        }
+
+        public object VisitVarDeclaration(VarDeclaration ast, object o)
+        {
+            ast.TypeDenoter = (TypeDenoter)ast.TypeDenoter.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("identifier \"%\" already declared", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitVarDeclarationInitialized(VarDeclarationInitialized ast, object o)
+        {
+            ast.TypeDenoter = (TypeDenoter)ast.Expression.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("identifier \"%\" already declared", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitRecursiveDeclaration(RecursiveDeclaration ast, object o)
+        {
+            identificationTable.OpenRecursiveScope();
+            ast.Declaration.Visit(this, null);
+            identificationTable.CloseRecursiveScope();
+
+            
+            if (identificationTable.RecursiveLevel > 0)
+            {
+                //We are out of every recursive level but there are still some undefined calls
+                identificationTable.PendingCalls.ForEach(pendingCall =>
+                {
+                    //Make an error for each of them
+                    errorReporter.ReportError("\"%\" is not a procedure or function identifier", pendingCall.GetProcFuncIdentifier().Spelling, pendingCall.GetProcFuncIdentifier().Position);
+                });
+                //Reset the list, so the compiler can keep going on checking errors
+                identificationTable.PendingCalls = new List<PendingCall>();
+            }
+            return null;
+        }
+
+        public object VisitLocalDeclaration(LocalDeclaration ast, object o)
+        {
+            identificationTable.OpenScope();
+            ast.Declaration1.Visit(this, null);
+            identificationTable.OpenScope();
+            ast.Declaration2.Visit(this, null);
+            identificationTable.CloseLocalScope();
+            return null;
         }
 
         #endregion

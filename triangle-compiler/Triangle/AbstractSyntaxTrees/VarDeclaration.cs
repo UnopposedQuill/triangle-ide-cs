@@ -2,8 +2,8 @@
 {
     public class VarDeclaration : Declaration
     {
-        private Identifier Identifier { get; set; }
-        private TypeDenoter TypeDenoter { get; set; }
+        public Identifier Identifier { get; }
+        public TypeDenoter TypeDenoter { get; internal set; }
 
         public VarDeclaration(Identifier identifier, TypeDenoter typeDenoter,
                 SourcePosition position) : base(position)

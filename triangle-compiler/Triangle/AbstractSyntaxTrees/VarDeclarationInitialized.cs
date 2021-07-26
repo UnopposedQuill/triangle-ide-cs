@@ -3,7 +3,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class VarDeclarationInitialized : VarDeclaration
     {
-        private Expression Expression { get; set; }
+        public Expression Expression { get; }
 
         /**
          * This will create a new instance for an Initialized Variable Declaration
