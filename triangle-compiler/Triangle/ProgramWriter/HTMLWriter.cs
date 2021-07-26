@@ -16,6 +16,7 @@ namespace TriangleCompiler.Triangle.ProgramWriter
          */
         public HTMLWriter(string sourceName)
         {
+            Directory.CreateDirectory("output");
             htmlFileStream = File.Create("output/" + sourceName + ".html");
             WriteToHTMLFile("<!DOCTYPE html>");
             WriteToHTMLFile("\n");

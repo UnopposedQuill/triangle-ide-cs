@@ -3,12 +3,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class CharacterExpression : Expression
     {
-        private CharacterLiteral characterLiteral;
+        public CharacterLiteral CharacterLiteral { get; }
 
         public CharacterExpression(CharacterLiteral clAST, SourcePosition position)
             : base(position)
         {
-            characterLiteral = clAST;
+            CharacterLiteral = clAST;
         }
 
         public override object Visit(IVisitor v, object o)

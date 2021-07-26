@@ -250,11 +250,11 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
         //These always are to return null and not use the given object.
         public object VisitAssignCommand(AssignCommand ast, object o)
         {
-            TypeDenoter variableType = (TypeDenoter)ast.Variable.Visit(this, null);
+            TypeDenoter variableType = (TypeDenoter)ast.Vname.Visit(this, null);
             TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
-            if (!ast.Variable.IsVariable)
+            if (!ast.Vname.IsVariable)
             {
-                errorReporter.ReportError("LHS of assignment is not a variable", "", ast.Variable.Position);
+                errorReporter.ReportError("LHS of assignment is not a variable", "", ast.Vname.Position);
             }
             if (!expressionType.Equals(variableType))
             {

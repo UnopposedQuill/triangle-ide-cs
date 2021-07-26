@@ -3,6 +3,7 @@
 using TriangleCompiler.Triangle.AbstractSyntaxTrees;
 using TriangleCompiler.Triangle.SyntacticAnalyzer;
 using TriangleCompiler.Triangle.ContextualAnalyzer;
+using TriangleCompiler.Triangle.ProgramWriter;
 
 namespace TriangleCompiler.Triangle
 {
@@ -39,7 +40,7 @@ namespace TriangleCompiler.Triangle
          * @return	true iff the source program is free of compile-time errors,
          *          otherwise false.
          */
-        public static bool CompileProgram(string sourceName, string objectName,
+        public bool CompileProgram(string sourceName, string objectName,
                                        bool showingAST, bool showingTable,
                                         bool showingHTML, bool showingXML)
         {
@@ -89,7 +90,7 @@ namespace TriangleCompiler.Triangle
 
                 if (showingXML)
                 {
-                    WriteXMLProgram(programAST, sourceName[sourceName.LastIndexOf('/')..].Replace(".tri", ""));
+                    this.WriteXMLProgram(programAST, sourceName[sourceName.LastIndexOf('/')..].Replace(".tri", ""));
                 }
 
                 Console.WriteLine("Contextual Analysis ...");
@@ -120,6 +121,13 @@ namespace TriangleCompiler.Triangle
             return successful;
         }
 
+        private void WriteXMLProgram(Program programAST, String sourceName)
+        {
+            XMLWriter xmlWriter = new(programAST);
+
+            xmlWriter.WriteProgramAST(sourceName);
+        }
+
         /**
          * Triangle compiler main program.
          *
@@ -130,11 +138,11 @@ namespace TriangleCompiler.Triangle
         {
             bool compiledOK;
 
-            Console.WriteLine(args.Length);
+            /*Console.WriteLine(args.Length);
             foreach (string s in args)
             {
                 Console.WriteLine(s);
-            }
+            }*/
 
             //Only the program path was added on commands
             if (args.Length <= 0)
@@ -143,8 +151,10 @@ namespace TriangleCompiler.Triangle
                 return 1;
             }
 
-            String sourceName = args[0];
-            compiledOK = CompileProgram(sourceName, objectName, false, false, false, false);
+            string sourceName = args[0];
+
+            Compiler compiler = new();
+            compiledOK = compiler.CompileProgram(sourceName, objectName, false, false, true, true);
 
             return compiledOK ? 0 : 1;
         }

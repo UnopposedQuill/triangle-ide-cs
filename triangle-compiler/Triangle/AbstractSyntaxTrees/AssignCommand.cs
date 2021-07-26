@@ -3,13 +3,13 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class AssignCommand : Command
     {
-        public Vname Variable { get; }
+        public Vname Vname { get; }
         public Expression Expression { get; }
 
         public AssignCommand(Vname vAST, Expression eAST, SourcePosition position) : base(position)
         {
-            v = vAST;
-            e = eAST;
+            Vname = vAST;
+            Expression = eAST;
         }
 
         public override object Visit(IVisitor v, object o)
