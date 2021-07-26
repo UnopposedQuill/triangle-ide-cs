@@ -4,7 +4,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
     public class MultipleFieldTypeDenoter : FieldTypeDenoter
     {
         public Identifier Identifier { get; }
-        public TypeDenoter TypeDenoter { get; }
+        public TypeDenoter TypeDenoter { get; internal set; }
         public FieldTypeDenoter FieldTypeDenoter { get; }
 
         public MultipleFieldTypeDenoter(Identifier identifier, TypeDenoter typeDenoter,

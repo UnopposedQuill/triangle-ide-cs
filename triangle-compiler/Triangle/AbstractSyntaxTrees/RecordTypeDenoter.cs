@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class RecordTypeDenoter : TypeDenoter
     {
-        private FieldTypeDenoter fieldTypeDenoter;
+        public FieldTypeDenoter FieldTypeDenoter { get; internal set; }
         
         public RecordTypeDenoter(FieldTypeDenoter ftAST, SourcePosition position) : base(position)
         {
-            fieldTypeDenoter = ftAST;
+            FieldTypeDenoter = ftAST;
         }
 
         public override object Visit(IVisitor v, object o)
@@ -23,12 +23,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
                 return true;
             }
             return obj is RecordTypeDenoter denoter &&
-                    fieldTypeDenoter.Equals(denoter.fieldTypeDenoter);
+                    FieldTypeDenoter.Equals(denoter.FieldTypeDenoter);
         }
 
         public override int GetHashCode()
         {
-            return System.HashCode.Combine(base.GetHashCode(), fieldTypeDenoter);
+            return System.HashCode.Combine(base.GetHashCode(), FieldTypeDenoter);
         }
     }
 }

@@ -1006,5 +1006,217 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
         }
 
         #endregion
+
+        #region Type Denoters
+        // These return the expanded version of the TypeDenoter. Don't use
+        // the given object
+        
+        public object VisitAnyTypeDenoter(AnyTypeDenoter ast, object o)
+        {
+            return StdEnvironment.anyType; 
+        }
+        
+        public object VisitArrayTypeDenoter(ArrayTypeDenoter ast, object o)
+        {
+            ast.Type = (TypeDenoter)ast.Type.Visit(this, null);
+            if (System.Convert.ToInt64(ast.IntegerLiteral.Spelling) == 0)
+            {
+                errorReporter.ReportError("arrays must not be empty", "", ast.IntegerLiteral.Position);
+            }
+            return ast;
+        }
+        
+        public object VisitBoolTypeDenoter(BoolTypeDenoter ast, object o)
+        {
+            return StdEnvironment.booleanType;   
+        }
+        
+        public object VisitCharTypeDenoter(CharTypeDenoter ast, object o)
+        {
+            return StdEnvironment.charType;
+        }
+        
+        public object VisitErrorTypeDenoter(ErrorTypeDenoter ast, object o)
+        {
+            return StdEnvironment.errorType;
+        }
+        
+        public object VisitSimpleTypeDenoter(SimpleTypeDenoter ast, object o)
+        {
+            Declaration binding = (Declaration)ast.Identifier.Visit(this, null);
+            if (binding == null)
+            {
+                ReportUndeclared(ast.Identifier);
+                return StdEnvironment.errorType;
+            }
+            if (binding is TypeDeclaration typeDeclaration)
+            {
+                return typeDeclaration.TypeDenoter;
+            }
+            errorReporter.ReportError("\"%\" is not a type identifier", ast.Identifier.Spelling, ast.Identifier.Position);
+            return StdEnvironment.errorType;
+        }
+        
+        public object VisitIntTypeDenoter(IntTypeDenoter ast, object o)
+        {
+            return StdEnvironment.integerType;
+        }
+        
+        public object VisitRecordTypeDenoter(RecordTypeDenoter ast, object o)
+        {
+            ast.FieldTypeDenoter = (FieldTypeDenoter)ast.FieldTypeDenoter.Visit(this, null);
+            return ast;
+        }
+        
+        public object VisitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter ast, object o)
+        {
+            ast.TypeDenoter = (TypeDenoter)ast.TypeDenoter.Visit(this, null);
+            ast.FieldTypeDenoter.Visit(this, null);
+            return ast;
+        }
+
+        public object VisitSingleFieldTypeDenoter(SingleFieldTypeDenoter ast, object o)
+        {
+            ast.TypeDenoter = (TypeDenoter)ast.TypeDenoter.Visit(this, null);
+            return ast;
+        }
+
+        #endregion
+
+        #region Literals, Identifiers and Operators
+
+        
+        public object VisitCharacterLiteral(CharacterLiteral ast, object o)
+        {
+            return StdEnvironment.charType;
+        }
+        
+        public object VisitIdentifier(Identifier ast, object o)
+        {
+            Declaration binding = identificationTable.Retrieve(ast.Spelling);
+            if (binding != null)
+            {
+                ast.Declaration = binding;
+            }
+            return binding;
+        }
+        
+        public object VisitIntegerLiteral(IntegerLiteral ast, object o)
+        {
+            return StdEnvironment.integerType;
+        }
+
+        public object VisitOperator(Operator ast, object o)
+        {
+            Declaration binding = o != null ? identificationTable.Retrieve(ast.Spelling, (System.Type)o) :
+                                              identificationTable.Retrieve(ast.Spelling);
+            if (binding == null)
+            {
+                ast.Declaration = binding;
+            }
+            return binding;
+        }
+
+        #endregion
+
+        #region Value-or-variable names
+        // Determines the address of a named object (constant or variable).
+        // This consists of a base object, to which 0 or more field-selection
+        // or array-indexing operations may be applied (if it is a record or
+        // array).  As much as possible of the address computation is done at
+        // compile-time. Code is generated only when necessary to evaluate
+        // index expressions at run-time.
+        // currentLevel is the routine level where the v-name occurs.
+        // frameSize is the anticipated size of the local stack frame when
+        // the object is addressed at run-time.
+        // It returns the description of the base object.
+        // offset is set to the total of any field offsets (plus any offsets
+        // due to index expressions that happen to be literals).
+        // indexed is set to true iff there are any index expressions (other
+        // than literals). In that case code is generated to compute the
+        // offset due to these indexing operations at run-time.
+        // Returns the TypeDenoter of the Vname. Does not use the
+        // given object.
+
+        public object VisitDotVname(DotVname ast, object o)
+        {
+            ast.Type = null;
+            TypeDenoter variableType = (TypeDenoter)ast.Vname.Visit(this, null);
+            ast.IsVariable = ast.Vname.IsVariable;
+            if (variableType is RecordTypeDenoter recordTypeDenoter)
+            {
+                ast.Type = CheckFieldIdentifier(recordTypeDenoter.FieldTypeDenoter, ast.Identifier);
+                if (ast.Type == StdEnvironment.errorType)
+                {
+                    errorReporter.ReportError("no field \"%\" in this record type", ast.Identifier.Spelling, ast.Identifier.Position);
+                }
+            }
+            else
+            {
+                errorReporter.ReportError("record expected here", "", ast.Vname.Position);
+            }
+            return ast.Type;
+        }
+        
+        public object VisitSimpleVname(SimpleVname ast, object o)
+        {
+            ast.IsVariable = false;
+            ast.Type = StdEnvironment.errorType;
+            Declaration binding = (Declaration)ast.Identifier.Visit(this, null);
+            if (binding == null)
+            {
+                ReportUndeclared(ast.Identifier);
+            }
+            else if (binding is ConstDeclaration constDeclaration)
+            {
+                ast.Type = constDeclaration.Expression.Type;
+                //ast.IsVariable = false;
+            }
+            else if (binding is ConstFormalParameter constFormalParameter)
+            {
+                ast.Type = constFormalParameter.Type;
+                //ast.IsVariable = false;
+            }
+            else if (binding is VarDeclaration varDeclaration)
+            {
+                ast.Type = varDeclaration.TypeDenoter;
+                ast.IsVariable = true;
+            }
+            else if (binding is VarFormalParameter varFormalParameter)
+            {
+                ast.Type = varFormalParameter.TypeDenoter;
+                ast.IsVariable = true;
+            }
+            else
+            {
+                errorReporter.ReportError("\"%\" is not a const or var identifier", ast.Identifier.Spelling, ast.Identifier.Position);
+            }
+            return ast.Type;
+        }
+
+        public object VisitSubscriptVname(SubscriptVname ast, object o)
+        {
+            TypeDenoter variableType = (TypeDenoter)ast.Vname.Visit(this, null);
+            ast.IsVariable = ast.Vname.IsVariable;
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            if (variableType != StdEnvironment.errorType)
+            {
+                if (variableType is not ArrayTypeDenoter arrayTypeDenoter)
+                {
+                    errorReporter.ReportError("array expected here", "", ast.Vname.Position);
+                }
+                else
+                {
+                    if (expressionType != StdEnvironment.integerType)
+                    {
+                        errorReporter.ReportError("Integer expression expected here", "", ast.Expression.Position);
+                    }
+                    ast.Type = ((ArrayTypeDenoter)variableType).Type;
+                }
+            }
+            return ast.Type;
+        }
+
+        #endregion
     }
 }

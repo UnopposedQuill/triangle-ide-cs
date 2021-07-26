@@ -4,7 +4,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
     public class SingleFieldTypeDenoter : FieldTypeDenoter
     {
         public Identifier Identifier { get; }
-        public TypeDenoter TypeDenoter { get; }
+        public TypeDenoter TypeDenoter { get; internal set; }
 
         public SingleFieldTypeDenoter(Identifier identifier, TypeDenoter typeDenoter,
                 SourcePosition position) : base(position)

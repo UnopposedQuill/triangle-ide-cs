@@ -3,7 +3,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SimpleVname : Vname
     {
-        private Identifier Identifier { get; set; }
+        public Identifier Identifier { get; }
 
         public SimpleVname(Identifier iAST, SourcePosition position) : base(position)
         {

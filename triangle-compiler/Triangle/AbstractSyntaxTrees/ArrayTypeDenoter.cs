@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ArrayTypeDenoter : TypeDenoter
     {
-        private IntegerLiteral integerLiteral;
-        private TypeDenoter t;
+        public IntegerLiteral IntegerLiteral { get; }
+        public TypeDenoter Type { get; internal set; }
 
         public ArrayTypeDenoter(IntegerLiteral ilAST, TypeDenoter tAST,
                         SourcePosition position) : base(position)
         {
-            integerLiteral = ilAST;
-            t = tAST;
+            IntegerLiteral = ilAST;
+            Type = tAST;
         }
 
         public override object Visit(IVisitor v, object o)
@@ -20,7 +20,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         public override int GetHashCode()
         {
-            return System.HashCode.Combine(integerLiteral, t);
+            return System.HashCode.Combine(IntegerLiteral, Type);
         }
 
         public override bool Equals(object obj)
@@ -32,8 +32,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
             }
             if (obj != null && obj is ArrayTypeDenoter)
             {
-                return integerLiteral.GetSpelling().CompareTo(((ArrayTypeDenoter)obj).integerLiteral.GetSpelling()) == 0 &&
-                                    t.Equals(((ArrayTypeDenoter)obj).t);
+                return IntegerLiteral.Spelling.CompareTo(((ArrayTypeDenoter)obj).IntegerLiteral.Spelling) == 0 &&
+                                    Type.Equals(((ArrayTypeDenoter)obj).Type);
             }
             else
             {

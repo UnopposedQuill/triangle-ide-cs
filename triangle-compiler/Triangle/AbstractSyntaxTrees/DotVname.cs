@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class DotVname : Vname
     {
-        private Identifier identifier;
-        private Vname v;
+        public Identifier Identifier { get; }
+        public Vname Vname { get; }
 
         public DotVname(Vname vAST, Identifier iAST, SourcePosition position)
                 : base(position)
         {
-            v = vAST;
-            identifier = iAST;
+            Vname = vAST;
+            Identifier = iAST;
         }
 
         public override object Visit(IVisitor v, object o)

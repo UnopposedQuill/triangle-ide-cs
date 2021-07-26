@@ -6,12 +6,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SimpleTypeDenoter : TypeDenoter
     {
-        private Identifier identifier;
+        public Identifier Identifier { get; }
 
         public SimpleTypeDenoter(Identifier iAST, SourcePosition position)
                 : base(position)
         {
-            identifier = iAST;
+            Identifier = iAST;
         }
 
         public override object Visit(IVisitor v, object o)
@@ -26,7 +26,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(base.GetHashCode(), identifier);
+            return HashCode.Combine(base.GetHashCode(), Identifier);
         }
     }
 }

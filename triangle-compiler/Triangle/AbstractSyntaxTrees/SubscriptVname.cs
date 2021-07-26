@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SubscriptVname : Vname
     {
-        private Expression Expression { get; set; }
-        private Vname Vname { get; set; }
+        public Expression Expression { get; }
+        public Vname Vname { get; }
 
         public SubscriptVname(Vname vname, Expression expression,
                 SourcePosition position) : base(position)

@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class Operator : Terminal
     {
-        private Declaration declaration;
+        public Declaration Declaration { get; internal set; }
 
         public Operator(string spelling, SourcePosition position) : base(spelling, position)
         {
-            declaration = null;
+            Declaration = null;
         }
 
         public override object Visit(IVisitor v, object o)
