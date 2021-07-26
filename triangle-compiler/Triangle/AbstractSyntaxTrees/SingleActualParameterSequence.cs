@@ -3,7 +3,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SingleActualParameterSequence : ActualParameterSequence
     {
-        private ActualParameter ActualParameter { get; set; }
+        public ActualParameter ActualParameter { get; }
 
         public SingleActualParameterSequence(ActualParameter apAST,
                 SourcePosition position) : base(position)

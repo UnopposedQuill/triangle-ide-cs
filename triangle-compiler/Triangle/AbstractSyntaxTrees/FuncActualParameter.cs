@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class FuncActualParameter : ActualParameter
     {
-        private Identifier identifier;
+        public Identifier Identifier { get; }
 
         public FuncActualParameter(Identifier iAST, SourcePosition position) : base(position)
         {
-            identifier = iAST;
+            Identifier = iAST;
         }
 
         public override object Visit(IVisitor v, object o)

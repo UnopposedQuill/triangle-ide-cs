@@ -723,5 +723,288 @@ namespace TriangleCompiler.Triangle.ContextualAnalyzer
         }
 
         #endregion
+
+        #region Aggregates
+
+        // These return the TypeDenoter for the Aggregate. Does not use the given object
+        public object VisitMultipleArrayAggregate(MultipleArrayAggregate ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            TypeDenoter elementType = (TypeDenoter)ast.ArrayAggregate.Visit(this, null);
+            ast.ElementCount = ast.ArrayAggregate.ElementCount + 1;
+            if (!expressionType.Equals(elementType))
+            {
+                errorReporter.ReportError("incompatible array-aggregate element", "", ast.Expression.Position);
+            }
+            return elementType;
+        }
+
+        public object VisitSingleArrayAggregate(SingleArrayAggregate ast, object o)
+        {
+            TypeDenoter elementType = (TypeDenoter)ast.Expression.Visit(this, null);
+            ast.ElementCount = 1;
+            return elementType;
+        }
+
+        public object VisitMultipleRecordAggregate(MultipleRecordAggregate ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            FieldTypeDenoter recordType = (FieldTypeDenoter)ast.RecordAggregate.Visit(this, null);
+            TypeDenoter fieldType = CheckFieldIdentifier(recordType, ast.Identifier);
+            if (fieldType != StdEnvironment.errorType)
+            {
+                //It found a type for the field type, and thus an error
+                errorReporter.ReportError("duplicate field \"%\" in record", ast.Identifier.Spelling, ast.Identifier.Position);
+            }
+            ast.Type = new MultipleFieldTypeDenoter(ast.Identifier, expressionType, recordType, ast.Position);
+            return ast.Type;
+        }
+        public object VisitSingleRecordAggregate(SingleRecordAggregate ast, object o)
+        {
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+            ast.Type = new SingleFieldTypeDenoter(ast.Identifier, expressionType, ast.Position);
+            return ast.Type;
+        }
+
+        #endregion
+
+        #region Parameters
+
+        //Always return null. Does not use the given object.
+        //They are meant to construct and assign the type of each of the parameters
+
+        public object VisitConstFormalParameter(ConstFormalParameter ast, object o)
+        {
+            ast.Type = (TypeDenoter)ast.Type.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("duplicated formal parameter \"%\"", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitFuncFormalParameter(FuncFormalParameter ast, object o)
+        {
+            identificationTable.OpenScope();
+            ast.FormalParameterSequence.Visit(this, null);
+            identificationTable.CloseScope();
+
+            ast.Type = (TypeDenoter)ast.Type.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("duplicated formal parameter \"%\"", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitProcFormalParameter(ProcFormalParameter ast, object o)
+        {
+            identificationTable.OpenScope();
+            ast.FormalParameterSequence.Visit(this, null);
+            identificationTable.CloseScope();
+
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("duplicated formal parameter \"%\"", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitVarFormalParameter(VarFormalParameter ast, object o)
+        {
+            ast.TypeDenoter = (TypeDenoter)ast.TypeDenoter.Visit(this, null);
+            identificationTable.Enter(ast.Identifier.Spelling, ast);
+            if (ast.Duplicated)
+            {
+                errorReporter.ReportError("duplicated formal parameter \"%\"", ast.Identifier.Spelling, ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitEmptyFormalParameterSequence(EmptyFormalParameterSequence ast, object o)
+        {
+            return null;
+        }
+
+        public object VisitMultipleFormalParameterSequence(MultipleFormalParameterSequence ast, object o)
+        {
+            ast.FormalParameter.Visit(this, null);
+            ast.FormalParameterSequence.Visit(this, null);
+            return null;
+        }
+
+        public object VisitSingleFormalParameterSequence(SingleFormalParameterSequence ast, object o)
+        {
+            ast.FormalParameter.Visit(this, null);
+            return null;
+        }
+
+        //Always return null. Uses the given formal parameter
+        public object VisitConstActualParameter(ConstActualParameter ast, object o)
+        {
+            FormalParameter formalParameter = (FormalParameter)o;
+            TypeDenoter expressionType = (TypeDenoter)ast.Expression.Visit(this, null);
+
+            //It is a future call, thus we don't know its type yet
+            if (expressionType == null)
+            {
+                identificationTable.AddFutureCallExpression(new FutureCallExpression(((ConstFormalParameter)formalParameter).Type,
+                                                                                     ast.Expression));
+            }
+            if (formalParameter is not ConstFormalParameter)
+            {
+                errorReporter.ReportError("const actual parameter not expected here", "", ast.Position);
+            }
+            else if (!expressionType.Equals(((ConstFormalParameter)formalParameter).Type))
+            {
+                errorReporter.ReportError("wrong type for const actual parameter", "", ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitFuncActualParameter(FuncActualParameter ast, object o)
+        {
+            FormalParameter formalParameter = (FormalParameter)o;
+
+            Declaration binding = (Declaration)ast.Identifier.Visit(this, o);
+            if (binding == null)
+            {
+                ReportUndeclared(ast.Identifier);
+            }
+            else if (binding is not FuncDeclaration or FuncFormalParameter)
+            {
+                errorReporter.ReportError("\"%\" is not a function", ast.Identifier.Spelling, ast.Position);
+            }
+            else if (formalParameter is not FuncFormalParameter)
+            {
+                errorReporter.ReportError("func actual parameter not expected here", "", ast.Position);
+            }
+            else
+            {
+                FormalParameterSequence formalParameterSequence;
+                TypeDenoter type;
+                if (binding is FuncDeclaration func)
+                {
+                    formalParameterSequence = func.FormalParameterSequence;
+                    type = func.Type;
+                }
+                else
+                {
+                    formalParameterSequence = ((FuncFormalParameter)binding).FormalParameterSequence;
+                    type = ((FuncFormalParameter)binding).Type;
+                }
+                //@TODO: Check this section
+                if (!formalParameterSequence.Equals(((FuncFormalParameter)formalParameter).FormalParameterSequence))
+                {
+                    errorReporter.ReportError("wrong signature for function \"%\"", ast.Identifier.Spelling, ast.Identifier.Position); ;
+                }
+                else if (!type.Equals(((FuncFormalParameter)formalParameter).Type))
+                {
+                    errorReporter.ReportError("wrong type for function \"%\"", ast.Identifier.Spelling, ast.Identifier.Position);
+                }
+            }
+            return null;
+        }
+
+        public object VisitProcActualParameter(ProcActualParameter ast, object o)
+        {
+            FormalParameter formalParameter = (FormalParameter)o;
+
+            Declaration binding = (Declaration)ast.Identifier.Visit(this, o);
+            if (binding == null)
+            {
+                ReportUndeclared(ast.Identifier);
+            }
+            else if (binding is not ProcDeclaration or ProcFormalParameter)
+            {
+                errorReporter.ReportError("\"%\" is not a procedure identifier", ast.Identifier.Spelling, ast.Position);
+            }
+            else if (formalParameter is not ProcFormalParameter)
+            {
+                errorReporter.ReportError("proc actual parameter not expected here", "", ast.Position);
+            }
+            else
+            {
+                FormalParameterSequence formalParameterSequence;
+                if (binding is ProcDeclaration func)
+                {
+                    formalParameterSequence = func.FormalParameterSequence;
+                }
+                else
+                {
+                    formalParameterSequence = ((ProcFormalParameter)binding).FormalParameterSequence;
+                }
+                //@TODO: Check this section
+                if (!formalParameterSequence.Equals(((FuncFormalParameter)formalParameter).FormalParameterSequence))
+                {
+                    errorReporter.ReportError("wrong signature for procedure \"%\"", ast.Identifier.Spelling, ast.Identifier.Position); ;
+                }
+            }
+            return null;
+        }
+
+        public object VisitVarActualParameter(VarActualParameter ast, object o)
+        {
+            FormalParameter formalParameter = (FormalParameter)o;
+
+            TypeDenoter variableType = (TypeDenoter)ast.Vname.Visit(this, null);
+            if (!ast.Vname.IsVariable)
+            {
+                errorReporter.ReportError("actual parameter is not a variable", "", ast.Vname.Position);
+            }
+            else if (formalParameter is not VarFormalParameter)
+            {
+                errorReporter.ReportError("var actual parameter not expected here", "", ast.Vname.Position);
+            }
+            else if (!variableType.Equals(((VarFormalParameter)formalParameter).TypeDenoter))
+            {
+                errorReporter.ReportError("wrong type for var actual parameter", "", ast.Vname.Position);
+            }
+            return null;
+        }
+
+        public object VisitEmptyActualParameterSequence(EmptyActualParameterSequence ast, object o)
+        {
+            FormalParameterSequence formalParameterSequence = (FormalParameterSequence)o;
+            if (formalParameterSequence is not EmptyFormalParameterSequence)
+            {
+                errorReporter.ReportError("too few actual parameters", "", ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitMultipleActualParameterSequence(MultipleActualParameterSequence ast, object o)
+        {
+            FormalParameterSequence formalParameterSequence = (FormalParameterSequence)o;
+            if (formalParameterSequence is MultipleFormalParameterSequence multipleFormalParameterSequence)
+            {
+                ast.ActualParameter.Visit(this, multipleFormalParameterSequence.FormalParameter);
+                ast.ActualParameterSequence.Visit(this, multipleFormalParameterSequence.FormalParameterSequence);
+            }
+            else 
+            {
+                errorReporter.ReportError("too many actual parameters", "", ast.Position);
+            }
+            return null;
+        }
+
+        public object VisitSingleActualParameterSequence(SingleActualParameterSequence ast, object o)
+        {
+            FormalParameterSequence formalParameterSequence = (FormalParameterSequence)o;
+            if (formalParameterSequence is SingleFormalParameterSequence singleFormalParameterSequence)
+            {
+                ast.ActualParameter.Visit(this, singleFormalParameterSequence.FormalParameter);
+            }
+            else
+            {
+                errorReporter.ReportError("incorrect number of actual parameters", "", ast.Position);
+            }
+            return null;
+        }
+
+        #endregion
     }
 }

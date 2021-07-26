@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ProcActualParameter : ActualParameter
     {
-        private Identifier identifier;
+        public Identifier Identifier { get; }
 
         public ProcActualParameter(Identifier iAST, SourcePosition position) : base(position)
         {
-            this.identifier = iAST;
+            Identifier = iAST;
         }
 
         public override object Visit(IVisitor v, object o)

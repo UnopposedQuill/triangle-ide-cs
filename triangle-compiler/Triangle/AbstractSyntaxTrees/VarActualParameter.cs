@@ -3,7 +3,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class VarActualParameter : ActualParameter
     {
-        private Vname Vname { get; set; }
+        public Vname Vname { get; }
 
         public VarActualParameter(Vname vname, SourcePosition position)
                 : base(position)

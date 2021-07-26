@@ -6,14 +6,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class MultipleFormalParameterSequence : FormalParameterSequence
     {
-        private FormalParameter formalParameter;
-        private FormalParameterSequence parameterSequence;
+        public FormalParameter FormalParameter { get; }
+        public FormalParameterSequence FormalParameterSequence { get; }
 
         public MultipleFormalParameterSequence(FormalParameter formalParameter, FormalParameterSequence parameterSequence,
                 SourcePosition position) : base(position)
         {
-            this.formalParameter = formalParameter;
-            this.parameterSequence = parameterSequence;
+            FormalParameter = formalParameter;
+            FormalParameterSequence = parameterSequence;
         }
 
         public override object Visit(IVisitor v, object o)
@@ -24,12 +24,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public override bool Equals(object obj)
         {
             return obj is MultipleFormalParameterSequence sequence &&
-                formalParameter.Equals(sequence.formalParameter) && parameterSequence.Equals(sequence.parameterSequence);
+                FormalParameter.Equals(sequence.FormalParameter) && FormalParameterSequence.Equals(sequence.FormalParameterSequence);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(formalParameter, parameterSequence);
+            return HashCode.Combine(FormalParameter, FormalParameterSequence);
         }
     }
 }

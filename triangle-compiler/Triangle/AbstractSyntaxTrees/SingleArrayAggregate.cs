@@ -3,7 +3,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SingleArrayAggregate : ArrayAggregate
     {
-        private Expression Expression{ get; set; }
+        public Expression Expression{ get; }
 
         public SingleArrayAggregate(Expression eAST, SourcePosition position)
                 : base(position)

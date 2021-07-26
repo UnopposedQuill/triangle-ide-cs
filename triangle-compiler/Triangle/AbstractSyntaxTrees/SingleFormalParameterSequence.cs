@@ -3,7 +3,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SingleFormalParameterSequence : FormalParameterSequence
     {
-        private FormalParameter FormalParameter { get; set; }
+        public FormalParameter FormalParameter { get; }
 
         public SingleFormalParameterSequence(FormalParameter formalParameter,
                 SourcePosition position) : base(position)

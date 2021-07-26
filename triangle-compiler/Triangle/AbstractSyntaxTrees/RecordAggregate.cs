@@ -3,11 +3,11 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public abstract class RecordAggregate: AST
     {
-        private FieldTypeDenoter type;
+        public FieldTypeDenoter Type { get; internal set; }
 
         public RecordAggregate(SourcePosition position) : base(position)
         {
-            type = null;
+            Type = null;
         }
     }
 }

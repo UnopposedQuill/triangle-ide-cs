@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ConstFormalParameter : FormalParameter
     {
-        private Identifier identifier;
-        private TypeDenoter t;
+        public Identifier Identifier { get; }
+        public TypeDenoter Type { get; internal set; }
 
         public ConstFormalParameter(Identifier iAST, TypeDenoter tAST,
                 SourcePosition position) : base(position)
         {
-            identifier = iAST;
-            t = tAST;
+            Identifier = iAST;
+            Type = tAST;
         }
 
         public override object Visit(IVisitor v, object o)
@@ -26,7 +26,7 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         {
             if (obj is ConstFormalParameter constFormalParameter)
             {
-                return t.Equals(constFormalParameter.t);
+                return Type.Equals(constFormalParameter.Type);
             }
             return false;
         }

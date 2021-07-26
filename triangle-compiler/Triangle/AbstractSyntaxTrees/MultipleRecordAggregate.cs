@@ -3,16 +3,16 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class MultipleRecordAggregate : RecordAggregate
     {
-        private Identifier identifier;
-        private Expression expression;
-        private RecordAggregate recordAggregate;
+        public Identifier Identifier { get; }
+        public Expression Expression { get; }
+        public RecordAggregate RecordAggregate { get; }
 
         public MultipleRecordAggregate(Identifier identifier, Expression expression,
                 RecordAggregate recordAggregate, SourcePosition position) : base(position)
         {
-            this.identifier = identifier;
-            this.expression = expression;
-            this.recordAggregate = recordAggregate;
+            Identifier = identifier;
+            Expression = expression;
+            RecordAggregate = recordAggregate;
         }
 
         public override object Visit(IVisitor v, object o)

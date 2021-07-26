@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class SingleRecordAggregate : RecordAggregate
     {
-        private Identifier Identifier { get; set; }
-        private Expression Expression { get; set; }
+        public Identifier Identifier { get; }
+        public Expression Expression { get; }
 
         public SingleRecordAggregate(Identifier identifier, Expression expression,
                 SourcePosition position) : base(position)

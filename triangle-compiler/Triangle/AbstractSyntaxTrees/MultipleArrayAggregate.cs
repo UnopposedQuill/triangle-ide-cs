@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class MultipleArrayAggregate : ArrayAggregate
     {
-        private Expression expression;
-        private ArrayAggregate arrayAggregate;
+        public Expression Expression { get; }
+        public ArrayAggregate ArrayAggregate { get; }
 
         public MultipleArrayAggregate(Expression expression, ArrayAggregate arrayAggregate,
                 SourcePosition position) : base(position)
         {
-            this.expression = expression;
-            this.arrayAggregate = arrayAggregate;
+            Expression = expression;
+            ArrayAggregate = arrayAggregate;
         }
 
         public override object Visit(IVisitor v, object o)

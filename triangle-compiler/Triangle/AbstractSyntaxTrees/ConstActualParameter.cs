@@ -3,12 +3,12 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class ConstActualParameter : ActualParameter
     {
-        private Expression e;
+        public Expression Expression { get; }
 
         public ConstActualParameter(Expression eAST, SourcePosition position)
                 : base(position)
         {
-            e = eAST;
+            Expression = eAST;
         }
 
         public override object Visit(IVisitor v, object o)

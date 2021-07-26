@@ -3,8 +3,8 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class VarFormalParameter : FormalParameter
     {
-        private Identifier Identifier { get; set; }
-        private TypeDenoter TypeDenoter { get; set; }
+        public Identifier Identifier { get; }
+        public TypeDenoter TypeDenoter { get; internal set; }
 
         public VarFormalParameter(Identifier identifier, TypeDenoter typeDenoter,
                 SourcePosition position) : base(position)

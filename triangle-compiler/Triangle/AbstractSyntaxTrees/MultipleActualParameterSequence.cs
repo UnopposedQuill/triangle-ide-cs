@@ -3,14 +3,14 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
 {
     public class MultipleActualParameterSequence : ActualParameterSequence
     {
-        private ActualParameter actualParameter;
-        private ActualParameterSequence parameterSequence;
+        public ActualParameter ActualParameter { get; }
+        public ActualParameterSequence ActualParameterSequence { get; }
 
         public MultipleActualParameterSequence(ActualParameter actualParameter, ActualParameterSequence parameterSequence,
                 SourcePosition position) : base(position)
         {
-            this.actualParameter = actualParameter;
-            this.parameterSequence = parameterSequence;
+            ActualParameter = actualParameter;
+            ActualParameterSequence = parameterSequence;
         }
 
         public override object Visit(IVisitor v, object o)

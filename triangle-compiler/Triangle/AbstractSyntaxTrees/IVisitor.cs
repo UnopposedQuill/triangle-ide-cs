@@ -58,7 +58,6 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public abstract object VisitFuncFormalParameter(FuncFormalParameter ast, object o);
         public abstract object VisitProcFormalParameter(ProcFormalParameter ast, object o);
         public abstract object VisitVarFormalParameter(VarFormalParameter ast, object o);
-
         public abstract object VisitEmptyFormalParameterSequence(EmptyFormalParameterSequence ast, object o);
         public abstract object VisitMultipleFormalParameterSequence(MultipleFormalParameterSequence ast, object o);
         public abstract object VisitSingleFormalParameterSequence(SingleFormalParameterSequence ast, object o);
@@ -68,7 +67,6 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public abstract object VisitFuncActualParameter(FuncActualParameter ast, object o);
         public abstract object VisitProcActualParameter(ProcActualParameter ast, object o);
         public abstract object VisitVarActualParameter(VarActualParameter ast, object o);
-
         public abstract object VisitEmptyActualParameterSequence(EmptyActualParameterSequence ast, object o);
         public abstract object VisitMultipleActualParameterSequence(MultipleActualParameterSequence ast, object o);
         public abstract object VisitSingleActualParameterSequence(SingleActualParameterSequence ast, object o);
@@ -82,7 +80,6 @@ namespace TriangleCompiler.Triangle.AbstractSyntaxTrees
         public abstract object VisitSimpleTypeDenoter(SimpleTypeDenoter ast, object o);
         public abstract object VisitIntTypeDenoter(IntTypeDenoter ast, object o);
         public abstract object VisitRecordTypeDenoter(RecordTypeDenoter ast, object o);
-
         public abstract object VisitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter ast, object o);
         public abstract object VisitSingleFieldTypeDenoter(SingleFieldTypeDenoter ast, object o);
 
