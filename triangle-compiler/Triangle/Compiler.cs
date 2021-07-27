@@ -4,6 +4,7 @@ using TriangleCompiler.Triangle.AbstractSyntaxTrees;
 using TriangleCompiler.Triangle.SyntacticAnalyzer;
 using TriangleCompiler.Triangle.ContextualAnalyzer;
 using TriangleCompiler.Triangle.ProgramWriter;
+using TriangleCompiler.Triangle.CodeGenerator;
 
 namespace TriangleCompiler.Triangle
 {
@@ -12,14 +13,14 @@ namespace TriangleCompiler.Triangle
         //Filename for the object program, default is obj.tam
         public static string objectName = "obj.tam";
 
-        private static ErrorReporter errorReporter;
-        private static Scanner scanner;
-        private static Parser parser;
-        private static Checker checker;
-        /*private static Encoder encoder;
-        private static Drawer drawer;*/
+        private ErrorReporter errorReporter;
+        private Scanner scanner;
+        private Parser parser;
+        private Checker checker;
+        private Encoder encoder;
+        /*private Drawer drawer;*/
 
-        private static Program programAST;
+        public Program ProgramAST { get; private set; }
 
         /**
          * Compile the source program to TAM machine code.
@@ -77,11 +78,11 @@ namespace TriangleCompiler.Triangle
             errorReporter = new ErrorReporter();
             parser = new Parser(scanner, errorReporter);
             checker = new Checker(errorReporter);
-            /*encoder = new Encoder(errorReporter);
-            drawer = new Drawer();*/
+            encoder = new Encoder(errorReporter);
+            /*drawer = new Drawer();*/
 
             // scanner.enableDebugging();
-            programAST = parser.ParseProgram();             // 1st pass
+            ProgramAST = parser.ParseProgram();             // 1st pass
             if (errorReporter.getErrorCount() == 0)
             {
                 //if (showingAST) {
@@ -90,22 +91,22 @@ namespace TriangleCompiler.Triangle
 
                 if (showingXML)
                 {
-                    this.WriteXMLProgram(programAST, sourceName[sourceName.LastIndexOf('/')..].Replace(".tri", ""));
+                    WriteXMLProgram(ProgramAST, sourceName[sourceName.LastIndexOf('/')..].Replace(".tri", ""));
                 }
 
                 Console.WriteLine("Contextual Analysis ...");
-                checker.Check(programAST);              // 2nd pass
+                checker.Check(ProgramAST);              // 2nd pass
                 
                 /*if (showingAST)
                 {
                     drawer.draw(programAST);
                 }*/
                 
-                /*if (errorReporter.getErrorCount() == 0)
+                if (errorReporter.getErrorCount() == 0)
                 {
                     Console.WriteLine("Code Generation ...");
-                    encoder.encodeRun(programAST, showingTable);    // 3rd pass
-                }*/
+                    encoder.encodeRun(ProgramAST, showingTable);    // 3rd pass
+                }
             }
 
             bool successful = errorReporter.getErrorCount() == 0;
@@ -121,40 +122,48 @@ namespace TriangleCompiler.Triangle
             return successful;
         }
 
-        private void WriteXMLProgram(Program programAST, String sourceName)
+        private static void WriteXMLProgram(Program programAST, String sourceName)
         {
             XMLWriter xmlWriter = new(programAST);
 
             xmlWriter.WriteProgramAST(sourceName);
         }
 
-        /**
-         * Triangle compiler main program.
-         *
-         * @param	args	the only command-line argument to the program specifies
-         *                  the source filename.
-         */
+        /// <summary>
+        /// Triangle compiler main program.
+        /// </summary>
+        /// <param name="args">The files to be compiled</param>
+        /// <returns>
+        /// 0 if all programs were compiled successfully. 1 if one or more failed. 2 if
+        /// no file was specified. -1 if one of the files was not found, if one file was not
+        /// found it will halt compiling.
+        /// </returns>
         public static int Main(string[] args)
         {
-            bool compiledOK;
+            bool compiledOK = true;
 
-            /*Console.WriteLine(args.Length);
-            foreach (string s in args)
-            {
-                Console.WriteLine(s);
-            }*/
+            //Console.WriteLine(args.Length);
 
             //Only the program path was added on commands
             if (args.Length <= 0)
             {
                 Console.WriteLine("Usage: tc filename");
-                return 1;
+                return 2;
             }
 
-            string sourceName = args[0];
-
             Compiler compiler = new();
-            compiledOK = compiler.CompileProgram(sourceName, objectName, false, false, true, true);
+
+            Console.WriteLine("Files to compile:");
+            foreach (string s in args)
+            {
+                Console.WriteLine("\t-" + s);
+                if (!System.IO.File.Exists(s))
+                {
+                    Console.WriteLine("Error: File: " + s + " doesn't exist");
+                    return -1;
+                }
+                compiledOK = compiledOK && compiler.CompileProgram(s, objectName, false, false, true, true);
+            }
 
             return compiledOK ? 0 : 1;
         }
